@@ -17,8 +17,6 @@
 
 package org.apache.catalina.util;
 
-import javax.xml.bind.DatatypeConverter;
-
 import org.apache.tomcat.util.buf.ByteChunk;
 import org.apache.tomcat.util.buf.CharChunk;
 
