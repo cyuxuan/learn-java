@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="configuration-metadata" />
+        <module name="agent-demo" />
+        <module name="mybatis-test-field" />
+        <module name="bee-algorithm" />
+        <module name="spring-web-test-field" />
+        <module name="redis-spring" />
+        <module name="bean-lifecycle" />
+        <module name="ioc-container-overview" />
+        <module name="java-bean" />
+        <module name="redis-base" />
+        <module name="java-thread-test-field" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="untitled" target="17" />
+    </bytecodeTargetLevel>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="redis-spring" options="-parameters" />
+    </option>
+  </component>
+</project>
