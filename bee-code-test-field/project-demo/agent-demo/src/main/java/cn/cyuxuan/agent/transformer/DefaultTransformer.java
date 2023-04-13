@@ -41,41 +41,41 @@ public class DefaultTransformer implements ClassFileTransformer {
     public byte[] transform(ClassLoader loader, String className,
                             Class<?> classBeingRedefined, ProtectionDomain protectionDomain,
                             byte[] classfileBuffer) throws IllegalClassFormatException {
-        if(className == null) {
-            return null;
-        }
-        className = className.replaceAll("/", ".");
+        System.out.println(className);
         boolean skip = TransformCondition.skipTransformClass(className);
-        if (skip) {
+        if (className == null || skip) {
             return null;
         }
         try {
             System.out.println(className);
-            CtClass ctClass;
-            try {
-                ctClass = pool.get(className);
-            } catch (Exception e) {
-                e.getMessage();
-                return null;
-            }
+            className = className.replaceAll("/", ".");
+            CtClass ctClass = pool.get(className);
             // 这里对类的所有方法进行监控, 可以通过config配置具体监控哪些包下的类
             for (CtMethod method : ctClass.getDeclaredMethods()) {
                 // 判断method是否在sql集合中，如果是则需要
                 // 如果当前类在sql的集合中则需要进行sql匹配，否则正常操作
-                try {
+                List<String> agentSqlMethods = AgentConfig.getAgentSqlMethods();
+                String finalClassName = className;
+                if (agentSqlMethods.parallelStream().anyMatch(item -> {
+                    return item.startsWith(finalClassName);
+                })) {
+                    // 匹配是否为需要的sql执行方法
+                    if (agentSqlMethods.parallelStream().anyMatch(item -> {
+                        return item.equals(finalClassName + "#" + method.getName());
+                    })) {
+                        transformSourceCode(method, pool, className);
+                    } else {
+                        return null;
+                    }
+                } else {
                     transformSourceCode(method, pool, className);
-                } catch (Exception e) {
-                    e.getMessage();
-                    return null;
                 }
-
             }
-            byte[] bytes = ctClass.toBytecode();
-            ctClass.detach();
-            return bytes;
+            return ctClass.toBytecode();
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         return null;
     }
 
@@ -117,8 +117,8 @@ public class DefaultTransformer implements ClassFileTransformer {
         method.insertAfter("cn.cyuxuan.agent.service.PerfStatisticsService.popMethodCallInfoOnThread($_);"
                 , false);
         // 增加异常
-//        method.addCatch("cn.cyuxuan.agent.result.ResultHandler.exception(" +
-//                methodDescription.getId() + ", $e); throw $e;", pool.get("java.lang.Exception"));
+        method.addCatch("cn.cyuxuan.agent.result.ResultHandler.exception(" +
+                methodDescription.getId() + ", $e); throw $e;", pool.get("java.lang.Exception"));
     }
 
     /**

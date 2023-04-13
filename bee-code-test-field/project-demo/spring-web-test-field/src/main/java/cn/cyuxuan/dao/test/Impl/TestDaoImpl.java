@@ -3,8 +3,8 @@ package cn.cyuxuan.dao.test.Impl;
 import cn.cyuxuan.dao.test.TestDao;
 import org.springframework.stereotype.Service;
 
-//@Service
-public class TestDaoImpl {
+@Service
+public class TestDaoImpl implements TestDao {
 
 //    @Override
     public String selectNameById(int id) {

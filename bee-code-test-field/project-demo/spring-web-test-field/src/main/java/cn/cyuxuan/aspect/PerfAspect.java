@@ -1,13 +1,15 @@
 package cn.cyuxuan.aspect;
 
-import cn.cyuxuan.aspect.util.ExecuteInfoUtils;
-import cn.cyuxuan.aspect.util.PerfThreadUtils;
+import cn.cyuxuan.util.ExecuteInfoUtils;
+import cn.cyuxuan.util.PerfThreadUtils;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.After;
+import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.stereotype.Component;
 
 /**
  * 函数执行时间分析

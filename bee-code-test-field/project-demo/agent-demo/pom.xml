@@ -12,8 +12,8 @@
     <artifactId>agent-demo</artifactId>
 
     <properties>
-        <maven.compiler.source>8</maven.compiler.source>
-        <maven.compiler.target>8</maven.compiler.target>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
     </properties>
 
     <dependencies>
@@ -44,7 +44,7 @@
                         </manifest>
                         <manifestEntries>
                             <Premain-Class>cn.cyuxuan.agent.AgentPreDemo</Premain-Class>
-                            <Agent-Class>cn.cyuxuan.agent.AgentDemo</Agent-Class>
+                            <Agent-Class>cn.cyuxuan.agent.AgentPreDemo</Agent-Class>
                             <Can-Redefine-Classes>true</Can-Redefine-Classes>
                             <Can-Retransform-Classes>true</Can-Retransform-Classes>
                         </manifestEntries>

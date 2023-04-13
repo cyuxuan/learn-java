@@ -15,19 +15,19 @@ public class AgentConfig {
     private static final String AGENT_PACKAGES_EXCLUDES_KEY = "agent.packages.excludes";
 
     /**
-     * 需要转换的包的键值
+     * 排除包的键
      */
     private static final String AGENT_PACKAGES_KEY = "agent.packages";
 
     /**
-     * 入口包的键值
+     * 排除包的键
      */
     private static final String AGENT_ENTRANCE_KEY = "agent.entrance";
 
     /**
      * sql要拦截的包
      */
-    private static final String AGENT_SQL_METHODS_KEY = "agent.sql.entrance";
+    private static final String AGENT_SQL_METHODS_KEY = "agent.sql.methods";
 
 
     private static Properties properties = new Properties();
@@ -38,12 +38,6 @@ public class AgentConfig {
      * 是否开启sql统计
      */
     private static boolean agentSqlEnable = true;
-
-
-    /**
-     * 当前是否打印关系集合
-     */
-    private static boolean agentHandleRelation = false;
 
     /**
      * 当前探针需要打在哪些包的方法上面
@@ -56,7 +50,7 @@ public class AgentConfig {
      */
     private static List<String> agentEntrances = new ArrayList<>();
 
-    private static List<String> agentSqlEntrance = new ArrayList<>();
+    private static List<String> agentSqlMethods = new ArrayList<>();
 
     static {
         // 默认的排除包，防止探针循环打印
@@ -91,11 +85,9 @@ public class AgentConfig {
         parseConfig((String) properties.get(AGENT_PACKAGES_EXCLUDES_KEY), agentPackagesExcludes);
         parseConfig((String) properties.get(AGENT_PACKAGES_KEY), agentPackages);
         parseConfig((String) properties.get(AGENT_ENTRANCE_KEY), agentEntrances);
-        parseConfig((String) properties.get(AGENT_SQL_METHODS_KEY), agentSqlEntrance);
+        parseConfig((String) properties.get(AGENT_SQL_METHODS_KEY), agentSqlMethods);
         // 解析sql配置
         parseSqlConfig((String) properties.get(AGENT_ENTRANCE_KEY));
-        // 解析打印关系开关
-        parseRelationConfig((String)properties.get("agent.handleRelation"));
     }
 
 
@@ -129,15 +121,7 @@ public class AgentConfig {
         return agentSqlEnable;
     }
 
-    public static List<String> getAgentSqlEntrance() {
-        return agentSqlEntrance;
-    }
-
-    public static void parseRelationConfig(String item) {
-        agentHandleRelation = "true".equals(item);
-    }
-
-    public static boolean isAgentHandleRelation() {
-        return agentHandleRelation;
+    public static List<String> getAgentSqlMethods() {
+        return agentSqlMethods;
     }
 }
