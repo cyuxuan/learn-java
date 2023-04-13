@@ -46,6 +46,7 @@ public class PerfStatisticsService {
         methodExeDescription.startWatch();
     }
 
+
     /**
      * 当前方法调用完成以后调用信息出栈
      */
@@ -91,5 +92,25 @@ public class PerfStatisticsService {
         }
         // 赋值
         function.accept(allocatedBytes, gcNum);
+    }
+
+    public static void popMethodCallInfoOnThread(char returnValues) {
+        popMethodCallInfoOnThread(returnValues);
+    }
+
+    public static void popMethodCallInfoOnThread(double returnValues) {
+        popMethodCallInfoOnThread(returnValues);
+    }
+
+    public static void popMethodCallInfoOnThread(long returnValues) {
+        popMethodCallInfoOnThread(returnValues);
+    }
+
+    public static void popMethodCallInfoOnThread(boolean returnValues) {
+        popMethodCallInfoOnThread(returnValues);
+    }
+
+    public static void popMethodCallInfoOnThread(int returnValues) {
+        popMethodCallInfoOnThread(returnValues);
     }
 }

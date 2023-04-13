@@ -6,6 +6,9 @@ import cn.cyuxuan.agent.sourceobject.MethodCommonDescription;
 import cn.cyuxuan.agent.sourceobject.MethodRunTimeDescription;
 import cn.cyuxuan.agent.util.MethodDescriptionUtil;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -29,7 +32,11 @@ public class ResultHandler {
             // 判断是否跳过结果输出
             boolean skip = ResultCondition.skipPrint(methodRunTimeDescription.getMethodDescriptionId());
             if (!skip) {
-                printInfo(list, map);
+                try {
+                    printInfo(list, map);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         } finally {
             // 打印结束后移除线程本地变量
@@ -49,14 +56,15 @@ public class ResultHandler {
      * @param list 方法执行顺序
      * @param map  方法执行键值对
      */
-    private static void printInfo(List<String> list, Map<String, MethodRunTimeDescription> map) {
+    private static void printInfo(List<String> list, Map<String, MethodRunTimeDescription> map) throws IOException {
         List<String> heads = new ArrayList<>();
         List<String> tails = new ArrayList<>();
+        MethodCommonDescription methodDescription = new MethodCommonDescription();
         for (String infoId : list) {
             MethodRunTimeDescription exeInfo = map.get(infoId);
             // 获取方法通用描述信息
-            MethodCommonDescription methodDescription
-                    = MethodDescriptionUtil.getMethodDescription(exeInfo.getMethodDescriptionId());
+
+            methodDescription = MethodDescriptionUtil.getMethodDescription(exeInfo.getMethodDescriptionId());
 
             StringBuilder prefix = new StringBuilder();
             for (int i = 0; i < exeInfo.getLevel(); i++) {
@@ -78,6 +86,15 @@ public class ResultHandler {
                 longest = head.length();
             }
         }
+        File file = new File("D://applog/" +
+                methodDescription.getSourceClassName()
+                        .replace(".", "-")
+                + "-" +
+                methodDescription.getMethodName()
+                + "-" +
+                Thread.currentThread().getId()
+                +".log");
+        FileWriter writer = new FileWriter(file);
         // 执行输出，不满足长度的则补齐长度
         for (int i = 0; i < heads.size(); i++) {
             StringBuilder builder = new StringBuilder();
@@ -85,8 +102,13 @@ public class ResultHandler {
                 builder.append(" ");
             }
             builder.append(" **");
-            logger.info(heads.get(i) + builder + tails.get(i));
+            String msg = heads.get(i) + builder + tails.get(i);
+            logger.info(msg);
+            writer.write(msg);
+            writer.write("\n");
         }
+        writer.flush();
+        writer.close();
     }
 
     /**

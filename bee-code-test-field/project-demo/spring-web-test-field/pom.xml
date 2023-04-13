@@ -12,8 +12,8 @@
     <artifactId>spring-web-test-field</artifactId>
 
     <properties>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
         <arthas.version>1.0.55</arthas.version>
     </properties>
 
@@ -49,13 +49,14 @@
             <artifactId>mysql-connector-java</artifactId>
         </dependency>
 
-        <!--    arthas依赖    -->
-<!--        <dependency>-->
-<!--            <groupId>com.taobao.arthas</groupId>-->
-<!--            <artifactId>arthas-spring-boot-starter</artifactId>-->
-<!--            <version>3.6.7</version>-->
-<!--            <scope>runtime</scope>-->
-<!--        </dependency>-->
+        <dependency>
+            <groupId>com.sun</groupId>
+            <artifactId>tools</artifactId>
+            <version>1.8</version>
+            <scope>system</scope>
+            <systemPath>G:/c_env/jdk/openjdku-8u262-b10/lib/tools.jar</systemPath>
+<!--            <systemPath>${JAVA_HOME}/lib/tools.jar</systemPath>-->
+        </dependency>
     </dependencies>
 
     <dependencyManagement>
