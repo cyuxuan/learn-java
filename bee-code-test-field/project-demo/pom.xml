@@ -13,7 +13,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>spring-web-test-field</module>
-        <module>agent-demo</module>
+        <module>code-analysis</module>
     </modules>
 
     <properties>
