@@ -1,4 +1,4 @@
-package cn.cyuxuan.aspect.entity;
+package cn.cyuxuan.code.analysis.aspect.entity;
 
 /**
  * 执行信息

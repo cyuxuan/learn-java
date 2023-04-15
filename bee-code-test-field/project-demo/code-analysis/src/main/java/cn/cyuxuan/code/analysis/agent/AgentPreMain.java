@@ -8,7 +8,7 @@ import javassist.ClassPool;
 import java.io.IOException;
 import java.lang.instrument.Instrumentation;
 
-public class AgentPreDemo {
+public class AgentPreMain {
     public static void premain(String agentArgs, Instrumentation inst) throws ClassNotFoundException, IOException {
         // 加载配置文件
         AgentConfig.load();

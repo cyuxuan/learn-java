@@ -1,4 +1,4 @@
-package cn.cyuxuan.aspect.util;
+package cn.cyuxuan.code.analysis.aspect.util;
 
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;

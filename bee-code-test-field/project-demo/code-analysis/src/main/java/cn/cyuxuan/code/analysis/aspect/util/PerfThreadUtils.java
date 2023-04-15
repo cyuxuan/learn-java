@@ -1,6 +1,6 @@
-package cn.cyuxuan.aspect.util;
+package cn.cyuxuan.code.analysis.aspect.util;
 
-import cn.cyuxuan.aspect.entity.ExecuteInfo;
+import cn.cyuxuan.code.analysis.aspect.entity.ExecuteInfo;
 import com.sun.management.ThreadMXBean;
 import org.springframework.util.StopWatch;
 

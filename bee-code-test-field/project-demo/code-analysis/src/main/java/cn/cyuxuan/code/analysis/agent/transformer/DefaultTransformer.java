@@ -69,9 +69,7 @@ public class DefaultTransformer implements ClassFileTransformer {
                 }
 
             }
-            byte[] bytes = ctClass.toBytecode();
-            ctClass.detach();
-            return bytes;
+            return ctClass.toBytecode();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -110,14 +108,14 @@ public class DefaultTransformer implements ClassFileTransformer {
     private static void transformMethod(CtMethod method, MethodCommonDescription methodDescription, ClassPool pool)
             throws NotFoundException, CannotCompileException {
         // 方法执行前，获取
-        method.insertBefore("cn.cyuxuan.agent.service.PerfStatisticsService.pushMethodCallInfoOnThread("
+        method.insertBefore("cn.cyuxuan.code.analysis.agent.service.PerfStatisticsService.pushMethodCallInfoOnThread("
                 + methodDescription.getId() + ", $args);");
         // 调用方法, 传入方法描述id, 方法入参，方法
-        method.insertAfter("cn.cyuxuan.agent.service.PerfStatisticsService.popMethodCallInfoOnThread($_);"
+        method.insertAfter("cn.cyuxuan.code.analysis.agent.service.PerfStatisticsService.popMethodCallInfoOnThread($_);"
                 , false);
         // 增加异常
-//        method.addCatch("cn.cyuxuan.agent.result.ResultHandler.exception(" +
-//                methodDescription.getId() + ", $e); throw $e;", pool.get("java.lang.Exception"));
+        method.addCatch("cn.cyuxuan.code.analysis.agent.service.PerfStatisticsService.exception(" +
+                methodDescription.getId() + ", $e); throw $e;", pool.get("java.lang.Exception"));
     }
 
     /**

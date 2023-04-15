@@ -45,10 +45,6 @@ public class ResultHandler {
         }
     }
 
-    public static void exception(int id, Exception e) throws Exception {
-        throw new Exception("method [" + id + "] : handle error", e);
-    }
-
     /**
      * 输出执行信息
      *

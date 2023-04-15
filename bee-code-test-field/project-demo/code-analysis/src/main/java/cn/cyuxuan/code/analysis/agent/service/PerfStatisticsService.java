@@ -17,7 +17,6 @@ import java.util.function.BiConsumer;
  * @since 23.04
  */
 public class PerfStatisticsService {
-
     /**
      * 当前线程调用的方法压入当前线程对应的方法调用栈中
      *
@@ -25,6 +24,7 @@ public class PerfStatisticsService {
      * @param inputValues 输入参数
      */
     public static void pushMethodCallInfoOnThread(int methodId, Object[] inputValues) {
+        System.out.println("入栈");
         // 生成一个运行时信息
         MethodRunTimeDescription methodExeDescription = new MethodRunTimeDescription();
         // 获取当前运行时id
@@ -49,6 +49,7 @@ public class PerfStatisticsService {
      * 当前方法调用完成以后调用信息出栈
      */
     public static void popMethodCallInfoOnThread(Object returnValues) {
+        System.out.println("出栈");
         MethodRunTimeDescription methodExeDescription = Result.resultPop();
         if (methodExeDescription == null) {
             // 执行结束
@@ -90,6 +91,17 @@ public class PerfStatisticsService {
         }
         // 赋值
         function.accept(allocatedBytes, gcNum);
+    }
+
+    /**
+     * 异常信息
+     *
+     * @param id 方法id
+     * @param e  异常信息
+     * @throws Exception 异常
+     */
+    public static void exception(int id, Exception e) throws Exception {
+        throw new Exception("method [" + id + "] : handle error", e);
     }
 
     /**

@@ -1,13 +1,16 @@
-package cn.cyuxuan.aspect;
+package cn.cyuxuan.code.analysis.aspect;
 
-import cn.cyuxuan.aspect.util.ExecuteInfoUtils;
-import cn.cyuxuan.aspect.util.PerfThreadUtils;
+import cn.cyuxuan.code.analysis.aspect.util.ExecuteInfoUtils;
+import cn.cyuxuan.code.analysis.aspect.util.PerfThreadUtils;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.After;
+import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.stereotype.Component;
 
 /**
  * 函数执行时间分析
@@ -19,8 +22,9 @@ import org.aspectj.lang.reflect.MethodSignature;
  * @author 陈玉轩
  * @since 23.03.26
  */
-//@Aspect
-//@Component
+@Aspect
+@Component
+@ConditionalOnProperty(value = "code.analysis.mode", havingValue = "Aspect")
 public class PerfAspect {
 
 

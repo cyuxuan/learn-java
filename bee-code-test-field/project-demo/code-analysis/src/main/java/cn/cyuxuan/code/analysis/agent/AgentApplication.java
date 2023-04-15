@@ -1,8 +1,8 @@
-package cn.cyuxuan.boot;
+package cn.cyuxuan.code.analysis.agent;
 
 import com.sun.tools.attach.VirtualMachine;
 
-public class AgentMain {
+public class AgentApplication {
     public static void main(String[] args) throws Exception {
         //目标VM线程ID
         VirtualMachine target = VirtualMachine.attach("8072");
