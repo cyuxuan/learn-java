@@ -4,6 +4,7 @@ import cn.cyuxuan.code.analysis.agent.condition.ResultCondition;
 import cn.cyuxuan.code.analysis.agent.sourceobject.MethodCommonDescription;
 import cn.cyuxuan.code.analysis.agent.sourceobject.MethodRunTimeDescription;
 import cn.cyuxuan.code.analysis.agent.util.MethodDescriptionUtil;
+import cn.cyuxuan.code.analysis.log.Log;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -14,7 +15,7 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 public class ResultHandler {
-    private static Logger logger = Logger.getLogger("ResultHandler");
+
     private final static String USETIME = " 耗时:";
 
     public static void printResult() {
@@ -87,6 +88,8 @@ public class ResultHandler {
                 + "-" +
                 methodDescription.getMethodName()
                 + "-" +
+                methodDescription.getId()
+                + "-" +
                 Thread.currentThread().getId()
                 +".log");
         FileWriter writer = new FileWriter(file);
@@ -98,7 +101,7 @@ public class ResultHandler {
             }
             builder.append(" **");
             String msg = heads.get(i) + builder + tails.get(i);
-            logger.info(msg);
+            Log.log(msg);
             writer.write(msg);
             writer.write("\n");
         }

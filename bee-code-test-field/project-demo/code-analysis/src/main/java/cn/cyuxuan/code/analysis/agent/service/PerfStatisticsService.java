@@ -24,7 +24,6 @@ public class PerfStatisticsService {
      * @param inputValues 输入参数
      */
     public static void pushMethodCallInfoOnThread(int methodId, Object[] inputValues) {
-        System.out.println("入栈");
         // 生成一个运行时信息
         MethodRunTimeDescription methodExeDescription = new MethodRunTimeDescription();
         // 获取当前运行时id
@@ -49,7 +48,6 @@ public class PerfStatisticsService {
      * 当前方法调用完成以后调用信息出栈
      */
     public static void popMethodCallInfoOnThread(Object returnValues) {
-        System.out.println("出栈");
         MethodRunTimeDescription methodExeDescription = Result.resultPop();
         if (methodExeDescription == null) {
             // 执行结束

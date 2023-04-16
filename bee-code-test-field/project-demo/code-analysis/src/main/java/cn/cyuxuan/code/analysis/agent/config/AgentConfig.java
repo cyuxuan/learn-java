@@ -112,7 +112,6 @@ public class AgentConfig {
         }
     }
 
-
     public static List<String> getAgentPackagesExcludes() {
         return agentPackagesExcludes;
     }
