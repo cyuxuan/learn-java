@@ -26,34 +26,20 @@
     <dependencies>
         <dependency>
             <groupId>club.beenest.blog</groupId>
-            <artifactId>blog-support</artifactId>
+            <artifactId>blog-object</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
 
-
-        <!-- spring web支持 -->
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
-        <!-- spring 切面支持 -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-aop</artifactId>
-        </dependency>
-        <!-- spring security -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-security</artifactId>
+            <groupId>club.beenest.blog</groupId>
+            <artifactId>blog-dao</artifactId>
+            <version>1.0-SNAPSHOT</version>
         </dependency>
 
-
-        <!-- ORM支持 -->
-        <!-- mybatis -->
         <dependency>
-            <groupId>org.mybatis.spring.boot</groupId>
-            <artifactId>mybatis-spring-boot-starter</artifactId>
-            <version>2.1.3</version>
+            <groupId>club.beenest.blog</groupId>
+            <artifactId>blog-manager</artifactId>
+            <version>1.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
 </project>
