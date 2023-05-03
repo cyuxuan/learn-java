@@ -19,6 +19,9 @@ public class PageResult<T> {
      */
     private List<T> list;
 
+    public PageResult() {
+    }
+
     public PageResult(Integer totalPage, List<T> list) {
         this.totalPage = totalPage;
         this.list = list;

@@ -2,6 +2,7 @@ package club.beenest.blog.support.common.dao.log;
 
 import club.beenest.blog.support.common.entity.log.OperationLog;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -15,7 +16,8 @@ import java.util.List;
 @Mapper
 @Repository
 public interface OperationLogMapper {
-    List<OperationLog> getOperationLogListByDate(String startDate, String endDate);
+    List<OperationLog> getOperationLogListByDate(@Param("startDate") String startDate
+            ,@Param("startDate") String endDate);
 
     int saveOperationLog(OperationLog log);
 

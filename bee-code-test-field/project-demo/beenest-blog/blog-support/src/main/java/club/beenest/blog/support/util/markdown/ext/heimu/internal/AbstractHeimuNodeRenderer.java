@@ -2,7 +2,7 @@ package club.beenest.blog.support.util.markdown.ext.heimu.internal;
 
 import org.commonmark.node.Node;
 import org.commonmark.renderer.NodeRenderer;
-import club.beenest.blog.support.util.markdown.ext.heimu.Heimu
+import club.beenest.blog.support.util.markdown.ext.heimu.Heimu;
 
 import java.util.Collections;
 import java.util.Set;

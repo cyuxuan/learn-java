@@ -4,8 +4,7 @@
 
 package club.beenest.blog.support.util;
 
-import club.beenest.blog.support.bas.model.dto.UserAgentDTO;
-import nl.basjes.parse.useragent.UserAgent;
+import club.beenest.blog.support.common.entity.useragent.UserAgent;
 import nl.basjes.parse.useragent.UserAgentAnalyzer;
 import org.springframework.stereotype.Component;
 
@@ -25,8 +24,8 @@ public class UserAgentUtils {
                 .useJava8CompatibleCaching()
                 .withCache(10000)
                 .hideMatcherLoadStats()
-                .withField(UserAgent.OPERATING_SYSTEM_NAME_VERSION_MAJOR)
-                .withField(UserAgent.AGENT_NAME_VERSION)
+                .withField(nl.basjes.parse.useragent.UserAgent.OPERATING_SYSTEM_NAME_VERSION_MAJOR)
+                .withField(nl.basjes.parse.useragent.UserAgent.AGENT_NAME_VERSION)
                 .build();
     }
 
@@ -36,10 +35,10 @@ public class UserAgentUtils {
      * @param userAgent
      * @return
      */
-    public UserAgentDTO parseOsAndBrowser(String userAgent) {
-        UserAgent agent = uaa.parse(userAgent);
-        String os = agent.getValue(UserAgent.OPERATING_SYSTEM_NAME_VERSION_MAJOR);
-        String browser = agent.getValue(UserAgent.AGENT_NAME_VERSION);
-        return new UserAgentDTO(os, browser);
+    public UserAgent parseOsAndBrowser(String userAgent) {
+        nl.basjes.parse.useragent.UserAgent agent = uaa.parse(userAgent);
+        String os = agent.getValue(nl.basjes.parse.useragent.UserAgent.OPERATING_SYSTEM_NAME_VERSION_MAJOR);
+        String browser = agent.getValue(nl.basjes.parse.useragent.UserAgent.AGENT_NAME_VERSION);
+        return new UserAgent(os, browser);
     }
 }

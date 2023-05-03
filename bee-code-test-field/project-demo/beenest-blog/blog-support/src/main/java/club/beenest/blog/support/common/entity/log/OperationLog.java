@@ -71,6 +71,8 @@ public class OperationLog {
      */
     private String userAgent;
 
+	public OperationLog(){};
+
     public OperationLog(String username, String uri, String method, String description, String ip, Integer times, String userAgent) {
         this.username = username;
         this.uri = uri;
