@@ -72,10 +72,8 @@ public class VisitorSyncScheduleTask {
         });
         int pv = yesterdayLogList.size();
         int uv = PVMap.size();
-        //获取昨天的日期字符串
-        String date = new SimpleDateFormat("MM-dd").format(DateUtils.addDays(new Date(), -1));
         //记录昨天的PV和UV
-        visitRecordService.saveVisitRecord(new VisitRecord(pv, uv, date));
+        visitRecordService.saveVisitRecord(new VisitRecord(pv, uv, new Date()));
         //更新昨天所有访客的PV和最后访问时间到数据库
         PVMap.forEach((uuid, views) -> {
             VisitLogUuidTime uuidPVTimeDTO = new VisitLogUuidTime(uuid, lastTimeMap.get(uuid), views);

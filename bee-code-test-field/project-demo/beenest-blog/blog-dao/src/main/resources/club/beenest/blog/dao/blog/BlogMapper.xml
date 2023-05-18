@@ -195,8 +195,10 @@
     <insert id="saveBlog" parameterType="club.beenest.blog.entity.blog.Blog" useGeneratedKeys="true" keyProperty="id">
         insert into blog (title, first_picture, content, description, is_published, is_recommend, is_appreciation, is_comment_enabled,
         is_top, create_time, update_time, views, words, read_time, category_id, user_id, password)
-        values (#{title}, #{firstPicture}, #{content}, #{description}, #{published}, #{recommend}, #{appreciation}, #{commentEnabled},
-        #{top}, #{createTime}, #{updateTime}, #{views}, #{words}, #{readTime}, #{category.id}, #{user.id}, #{password})
+        values (#{blog.title}, #{blog.firstPicture}, #{blog.content}, #{blog.description},
+        #{blog.published}, #{blog.recommend}, #{blog.appreciation}, #{blog.commentEnabled},
+        #{blog.top}, #{blog.createTime}, #{blog.updateTime}, #{blog.views}, #{blog.words},
+        #{blog.readTime}, #{blog.category.id}, #{blog.user.id}, #{blog.password})
     </insert>
 
     <!--更新博客推荐状态-->
@@ -276,11 +278,13 @@
 
     <!--更新博客-->
     <update id="updateBlog">
-        update blog set title=#{title}, first_picture=#{firstPicture}, content=#{content}, description=#{description},
-        is_recommend=#{recommend}, is_published=#{published}, is_appreciation=#{appreciation}, is_comment_enabled=#{commentEnabled},
-        is_top=#{top}, create_time=#{createTime}, update_time=#{updateTime}, views=#{views},
-        words=#{words}, read_time=#{readTime}, category_id=#{category.id}, password=#{password}
-        where id=#{id}
+        update blog set title=#{blog.title}, first_picture=#{blog.firstPicture},
+        content=#{blog.content}, description=#{blog.description},
+        is_recommend=#{blog.recommend}, is_published=#{blog.published}, is_appreciation=#{blog.appreciation},
+        is_comment_enabled=#{blog.commentEnabled},
+        is_top=#{blog.top}, create_time=#{blog.createTime}, update_time=#{blog.updateTime}, views=#{blog.views},
+        words=#{blog.words}, read_time=#{blog.readTime}, category_id=#{blog.category.id}, password=#{blog.password}
+        where id=#{blog.id}
     </update>
 
     <!--查询博客总数-->

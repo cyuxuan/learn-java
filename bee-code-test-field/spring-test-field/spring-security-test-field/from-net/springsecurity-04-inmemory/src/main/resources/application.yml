@@ -1,0 +1,5 @@
+spring:
+  security:
+    user:  # 该用户已失效
+      name: admin
+      password: 888888

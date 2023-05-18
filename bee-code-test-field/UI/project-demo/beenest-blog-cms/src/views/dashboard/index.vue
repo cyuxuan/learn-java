@@ -372,23 +372,24 @@
 					this.uv = res.data.uv
 					this.blogCount = res.data.blogCount
 					this.commentCount = res.data.commentCount
-					//渲染分类数据
-					this.categoryOption.legend.data = res.data.category.legend
-					this.categoryOption.series[0].data = res.data.category.series
+					// 渲染分类数据
+					this.categoryOption.legend.data = res.data.categoryNames
+					this.categoryOption.series[0].data = res.data.categoryNameBlogCountList
 					this.initCategoryEcharts()
-					//渲染标签数据
-					this.tagOption.legend.data = res.data.tag.legend
-					this.tagOption.series[0].data = res.data.tag.series
+					// 渲染标签数据
+					this.tagOption.legend.data = res.data.tags
+					this.tagOption.series[0].data = res.data.tagBlogCountList
 					this.initTagEcharts()
-					//渲染访客地图数据
-					let mapData = this.convertData(res.data.cityVisitor)
+					// 渲染访客地图数据
+					let mapData = this.convertData(res.data.cityVisitorList)
 					this.mapOption.series[1].data = mapData
 					this.mapOption.series[2].data = mapData.splice(0, 5)
 					this.initMapEcharts()
-					//渲染一周访问量数据
-					this.visitRecordOption.xAxis.data = res.data.visitRecord.date
-					this.visitRecordOption.series[0].data = res.data.visitRecord.pv
-					this.visitRecordOption.series[1].data = res.data.visitRecord.uv
+					// 渲染一周访问量数据
+					let visitRecordList = this.convertVisitRecordData(res.data.visitRecordList)
+					this.visitRecordOption.xAxis.data = visitRecordList.dates
+					this.visitRecordOption.series[0].data = visitRecordList.pvs
+					this.visitRecordOption.series[1].data = visitRecordList.uvs
 					this.initVisitRecordEcharts()
 				})
 			},
@@ -416,6 +417,22 @@
 						})
 					}
 				}
+				return res
+			},
+			convertVisitRecordData(data) {
+				let res = {}
+				let dates = []
+				let pvs = []
+				let uvs = []
+				for(let i = 0; i < data.length; i++) {
+					let record = data[i]
+					dates.push(record.date)
+					pvs.push(record.pv)
+					uvs.push(record.uv)
+				}
+				res["dates"] = dates
+				res["pvs"] = pvs
+				res["uvs"] = uvs
 				return res
 			},
 			initVisitRecordEcharts() {

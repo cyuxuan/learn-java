@@ -1,11 +1,19 @@
 package club.beenest.blog.entity.visit;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 /**
  * 城市访客数量
  *
  * @author 陈玉轩
  * @since 1.0
  */
+
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
 public class CityVisitor {
 	/**
 	 * 城市名称
@@ -15,33 +23,4 @@ public class CityVisitor {
 	 * 独立访客数量
 	 */
     private Integer uv;
-
-	public CityVisitor(String city, Integer uv) {
-		this.city = city;
-		this.uv = uv;
-	}
-
-	public String getCity() {
-		return city;
-	}
-
-	public void setCity(String city) {
-		this.city = city;
-	}
-
-	public Integer getUv() {
-		return uv;
-	}
-
-	public void setUv(Integer uv) {
-		this.uv = uv;
-	}
-
-	@Override
-	public String toString() {
-		return "CityVisitor{" +
-				"city='" + city + '\'' +
-				", uv=" + uv +
-				'}';
-	}
 }

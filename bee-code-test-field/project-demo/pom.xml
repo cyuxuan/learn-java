@@ -12,7 +12,6 @@
     <artifactId>project-demo</artifactId>
     <packaging>pom</packaging>
     <modules>
-        <module>spring-web-test-field</module>
         <module>code-analysis</module>
         <module>beenest-blog</module>
     </modules>

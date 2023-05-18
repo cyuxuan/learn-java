@@ -15,6 +15,7 @@
         <module>springframework-test-field</module>
         <module>java-bean</module>
         <module>spring-security-test-field</module>
+        <module>spring-web-test-field</module>
     </modules>
 
     <properties>

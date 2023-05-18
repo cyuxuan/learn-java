@@ -1,12 +1,23 @@
 package club.beenest.blog.entity.visit;
 
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.util.Date;
+
 /**
  * 访问记录
  *
  * @author 陈玉轩
  * @since 1.0
  */
+
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
 public class VisitRecord {
     private Long id;
 
@@ -20,57 +31,15 @@ public class VisitRecord {
 	 */
     private Integer uv;
 
-
 	/**
-	 *日期"02-23"
+	 *日期
 	 */
-    private String date;
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
+    private Date date;
 
-    public VisitRecord(Integer pv, Integer uv, String date) {
+    public VisitRecord(Integer pv, Integer uv, Date date) {
         this.pv = pv;
         this.uv = uv;
         this.date = date;
     }
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public Integer getPv() {
-		return pv;
-	}
-
-	public void setPv(Integer pv) {
-		this.pv = pv;
-	}
-
-	public Integer getUv() {
-		return uv;
-	}
-
-	public void setUv(Integer uv) {
-		this.uv = uv;
-	}
-
-	public String getDate() {
-		return date;
-	}
-
-	public void setDate(String date) {
-		this.date = date;
-	}
-
-	@Override
-	public String toString() {
-		return "VisitRecord{" +
-				"id=" + id +
-				", pv=" + pv +
-				", uv=" + uv +
-				", date='" + date + '\'' +
-				'}';
-	}
 }

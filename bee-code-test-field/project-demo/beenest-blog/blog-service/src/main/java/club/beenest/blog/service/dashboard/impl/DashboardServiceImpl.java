@@ -61,22 +61,43 @@ public class DashboardServiceImpl implements DashboardService {
     private static final int DEFAULT_VISIT_RECORD_LIMIT_NUM = 30;
 
     @Override
-    public int countVisitLogByToday() {
+    public DashboardData dashboard() {
+        DashboardData dashboardData = new DashboardData();
+        // 获取当前的浏览量
+        dashboardData.setPv(1);
+        // 获取当前的访客数量
+        dashboardData.setUv(1);
+        // 获取博客总量
+        dashboardData.setBlogCount(this.getBlogCount());
+        // 获取评论总量
+        dashboardData.setCommentCount(this.getCommentCount());
+        // 获取分类下的博客总量
+        dashboardData.setCategoryBlogCountList(this.getCategoryBlogCountList());
+        // 获取 标签下的博客总量
+        dashboardData.setTagBlogCountList(this.getTagBlogCountList());
+        // 获取访问记录
+        dashboardData.setVisitRecordList(this.getVisitRecordList());
+        // 获取按照城市划分的访客数量
+        dashboardData.setCityVisitorList(this.getCityVisitorList());
+        // 返回面版信息
+        return dashboardData;
+    }
+
+    private int countVisitLogByToday() {
         return visitLogMapper.countVisitLogByToday();
     }
 
-    @Override
-    public int getBlogCount() {
+
+    private int getBlogCount() {
         return blogMapper.countBlog();
     }
 
-    @Override
-    public int getCommentCount() {
+
+    private int getCommentCount() {
         return commentMapper.countComment();
     }
 
-    @Override
-    public List<CategoryBlogCount> getCategoryBlogCountList() {
+    private List<CategoryBlogCount> getCategoryBlogCountList() {
         // 查询分类id对应的博客数量
         List<CategoryBlogCount> categoryBlogCountList = blogMapper.getCategoryBlogCountList();
         // 查询所有分类的id和名称
@@ -100,8 +121,7 @@ public class DashboardServiceImpl implements DashboardService {
         return categoryBlogCountList;
     }
 
-    @Override
-    public List<TagBlogCount> getTagBlogCountList() {
+    private List<TagBlogCount> getTagBlogCountList() {
         // 查询标签id对应的博客数量
         List<TagBlogCount> tagBlogCountList = tagMapper.getTagBlogCount();
         // 查询所有标签的id和名称
@@ -124,35 +144,11 @@ public class DashboardServiceImpl implements DashboardService {
         return tagBlogCountList;
     }
 
-    @Override
-    public List<VisitRecord> getVisitRecordList() {
+    private List<VisitRecord> getVisitRecordList() {
         return visitRecordMapper.getVisitRecordListByLimit(DEFAULT_VISIT_RECORD_LIMIT_NUM);
     }
 
-    @Override
-    public List<CityVisitor> getCityVisitorList() {
+    private List<CityVisitor> getCityVisitorList() {
         return cityVisitorMapper.getCityVisitorList();
-    }
-
-    @Override
-    public DashboardData dashboard() {
-        DashboardData dashboardData = new DashboardData();
-        dashboardData.setPv(1);
-        dashboardData.setUv(1);
-        // TODO 获取 pv uv
-        // 获取博客总量
-        dashboardData.setBlogCount(this.getBlogCount());
-        // 获取评论总量
-        dashboardData.setCommentCount(this.getCommentCount());
-        // 获取分类下的博客总量
-        dashboardData.setCategoryBlogCountList(this.getCategoryBlogCountList());
-        // 获取 标签下的博客总量
-        dashboardData.setTagBlogCountMap(this.getTagBlogCountList());
-        // 获取访问记录
-        dashboardData.setVisitRecordList(this.getVisitRecordList());
-        // 获取按照城市划分的访客数量
-        dashboardData.setCityVisitorList(this.getCityVisitorList());
-        // 返回面版信息
-        return dashboardData;
     }
 }

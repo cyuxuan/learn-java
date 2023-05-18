@@ -21,7 +21,7 @@ public interface BlogMapper {
     List<Blog> getListByTitleAndCategoryId(@Param("title") String title,
                                            @Param("categoryId") Integer categoryId);
 
-    List<SearchBlog> getSearchBlogListByQueryAndIsPublished(String query);
+    List<SearchBlog> getSearchBlogListByQueryAndIsPublished(@Param("query") String query);
 
     List<Blog> getIdAndTitleList();
 
@@ -29,55 +29,55 @@ public interface BlogMapper {
 
     List<BlogInfo> getBlogInfoListByIsPublished();
 
-    List<BlogInfo> getBlogInfoListByCategoryNameAndIsPublished(String categoryName);
+    List<BlogInfo> getBlogInfoListByCategoryNameAndIsPublished(@Param("categoryName") String categoryName);
 
-    List<BlogInfo> getBlogInfoListByTagNameAndIsPublished(String tagName);
+    List<BlogInfo> getBlogInfoListByTagNameAndIsPublished(@Param("tagName") String tagName);
 
     List<String> getGroupYearMonthByIsPublished();
 
-    List<ArchiveBlog> getArchiveBlogListByYearMonthAndIsPublished(String yearMonth);
+    List<ArchiveBlog> getArchiveBlogListByYearMonthAndIsPublished(@Param("yearMonth") String yearMonth);
 
-    List<RandomBlog> getRandomBlogListByLimitNumAndIsPublishedAndIsRecommend(Integer limitNum);
+    List<RandomBlog> getRandomBlogListByLimitNumAndIsPublishedAndIsRecommend(@Param("limitNum") Integer limitNum);
 
     List<BlogView> getBlogViewsList();
 
-    int deleteBlogById(Long id);
+    int deleteBlogById(@Param("id") Long id);
 
-    int deleteBlogTagByBlogId(Long blogId);
+    int deleteBlogTagByBlogId(@Param("blogId") Long blogId);
 
-    int saveBlog(Blog blog);
+    int saveBlog(@Param("blog") Blog blog);
 
-    int saveBlogTag(Long blogId, Long tagId);
+    int saveBlogTag(@Param("blogId") Long blogId, @Param("tagId") Long tagId);
 
-    int updateBlogRecommendById(Long blogId, Boolean recommend);
+    int updateBlogRecommendById(@Param("blogId") Long blogId, @Param("recommend") Boolean recommend);
 
-    int updateBlogVisibilityById(Long blogId, BlogVisibility bv);
+    int updateBlogVisibilityById(@Param("blogId") Long blogId, @Param("bv") BlogVisibility bv);
 
-    int updateBlogTopById(Long blogId, Boolean top);
+    int updateBlogTopById(@Param("blogId") Long blogId, @Param("top") Boolean top);
 
-    int updateViews(Long blogId, Integer views);
+    int updateViews(@Param("blogId") Long blogId, @Param("views)") Integer views);
 
-    Blog getBlogById(Long id);
+    Blog getBlogById(@Param("id") Long id);
 
-    String getTitleByBlogId(Long id);
+    String getTitleByBlogId(@Param("id") Long id);
 
-    BlogDetail getBlogByIdAndIsPublished(Long id);
+    BlogDetail getBlogByIdAndIsPublished(@Param("id") Long id);
 
-    String getBlogPassword(Long blogId);
+    String getBlogPassword(@Param("blogId") Long blogId);
 
-    int updateBlog(Blog blog);
+    int updateBlog(@Param("blog") Blog blog);
 
     int countBlog();
 
     int countBlogByIsPublished();
 
-    int countBlogByCategoryId(Long categoryId);
+    int countBlogByCategoryId(@Param("categoryId") Long categoryId);
 
-    int countBlogByTagId(Long tagId);
+    int countBlogByTagId(@Param("tagId") Long tagId);
 
-    Boolean getCommentEnabledByBlogId(Long blogId);
+    Boolean getCommentEnabledByBlogId(@Param("blogId") Long blogId);
 
-    Boolean getPublishedByBlogId(Long blogId);
+    Boolean getPublishedByBlogId(@Param("blogId") Long blogId);
 
     List<CategoryBlogCount> getCategoryBlogCountList();
 }
