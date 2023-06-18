@@ -3,16 +3,31 @@ package club.beenest.blog.service.blog.impl;
 import club.beenest.blog.dao.blog.BlogMapper;
 import club.beenest.blog.entity.archive.ArchiveBlog;
 import club.beenest.blog.entity.blog.*;
+import club.beenest.blog.entity.catagory.Category;
 import club.beenest.blog.entity.search.SearchBlog;
+import club.beenest.blog.entity.tag.Tag;
+import club.beenest.blog.entity.user.User;
 import club.beenest.blog.service.blog.BlogService;
+import club.beenest.blog.service.category.CategoryService;
+import club.beenest.blog.service.comment.CommentService;
 import club.beenest.blog.service.tag.TagService;
+import club.beenest.blog.service.user.impl.UserServiceImpl;
+import club.beenest.blog.support.basic.service.BasService;
 import club.beenest.blog.support.common.service.redis.RedisService;
 import club.beenest.blog.support.common.service.redis.impl.RedisKeyConstants;
+import club.beenest.blog.support.constant.JwtConstants;
+import club.beenest.blog.support.exception.AuthException;
 import club.beenest.blog.support.exception.NotFoundException;
 import club.beenest.blog.support.exception.PersistenceException;
 import club.beenest.blog.support.request.PageResult;
+import club.beenest.blog.support.request.Result;
 import club.beenest.blog.support.util.JacksonUtils;
+import club.beenest.blog.support.util.JwtUtils;
+import club.beenest.blog.support.util.StringUtils;
 import club.beenest.blog.support.util.markdown.MarkdownUtils;
+import club.beenest.blog.vo.blog.BlogsAndCategoriesVO;
+import club.beenest.blog.vo.category.CategoriesAndTagsVO;
+import cn.hutool.core.exceptions.ValidateException;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,10 +35,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 博客文章业务层实现
@@ -32,15 +44,24 @@ import java.util.Map;
  * @since 1.0
  */
 @Service
-public class BlogServiceImpl implements BlogService {
+public class BlogServiceImpl extends BasService<Blog> implements BlogService {
     @Autowired
-	BlogMapper blogMapper;
+    BlogMapper blogMapper;
 
     @Autowired
     TagService tagService;
 
     @Autowired
     RedisService redisService;
+
+    @Autowired
+    CategoryService categoryService;
+
+    @Autowired
+    CommentService commentService;
+
+    @Autowired
+    UserServiceImpl userService;
 
     /**
      * 随机博客显示5条
@@ -68,7 +89,7 @@ public class BlogServiceImpl implements BlogService {
     private static final String PRIVATE_BLOG_DESCRIPTION = "此文章受密码保护！";
 
     /**
-	 * TODO
+     * TODO
      * 项目启动时，保存所有博客的浏览量到Redis
      */
     @PostConstruct
@@ -82,10 +103,21 @@ public class BlogServiceImpl implements BlogService {
         }
     }
 
-    @Override
-    public List<Blog> getListByTitleAndCategoryId(String title, Integer categoryId) {
-        return blogMapper.getListByTitleAndCategoryId(title, categoryId);
+    public PageInfo<Blog> getListByTitleAndCategoryId(String title,
+                       Integer categoryId, Integer pageNum, Integer pageSize) {
+        return this.selectForPage(pageNum,pageSize,
+                () -> blogMapper.getListByTitleAndCategoryId(title, categoryId));
     }
+
+    @Override
+    public BlogsAndCategoriesVO getListByTitleAndCategoryIdForPage(String title,
+                                 Integer categoryId, Integer pageNum, Integer pageSize) {
+        BlogsAndCategoriesVO blogsAndCategories = new BlogsAndCategoriesVO();
+        blogsAndCategories.setBlogPageInfo(this.getListByTitleAndCategoryId(title, categoryId, pageNum, pageSize));
+        blogsAndCategories.setCategorys(categoryService.getCategoryList());
+        return blogsAndCategories;
+    }
+
 
     @Override
     public List<SearchBlog> getSearchBlogListByQueryAndIsPublished(String query) {
@@ -271,8 +303,8 @@ public class BlogServiceImpl implements BlogService {
         if (blogMapper.deleteBlogById(id) != 1) {
             throw new NotFoundException("该博客不存在");
         }
-        deleteBlogRedisCache();
-        redisService.deleteByHashKey(RedisKeyConstants.BLOG_VIEWS_MAP, id);
+        this.deleteBlogTagByBlogId(id);
+        commentService.deleteCommentsByBlogId(id);
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -281,16 +313,6 @@ public class BlogServiceImpl implements BlogService {
         if (blogMapper.deleteBlogTagByBlogId(blogId) == 0) {
             throw new PersistenceException("维护博客标签关联表失败");
         }
-    }
-
-    @Transactional(rollbackFor = Exception.class)
-    @Override
-    public void saveBlog(Blog blog) {
-        if (blogMapper.saveBlog(blog) != 1) {
-            throw new PersistenceException("添加博客失败");
-        }
-        redisService.saveKVToHash(RedisKeyConstants.BLOG_VIEWS_MAP, blog.getId(), 0);
-        deleteBlogRedisCache();
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -387,12 +409,14 @@ public class BlogServiceImpl implements BlogService {
 
     @Transactional(rollbackFor = Exception.class)
     @Override
+    public void saveBlog(Blog blog) {
+        this.saveOrUpdate(blog, "save");
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
     public void updateBlog(Blog blog) {
-        if (blogMapper.updateBlog(blog) != 1) {
-            throw new PersistenceException("更新博客失败");
-        }
-        deleteBlogRedisCache();
-        redisService.saveKVToHash(RedisKeyConstants.BLOG_VIEWS_MAP, blog.getId(), blog.getViews());
+        this.saveOrUpdate(blog, "update");
     }
 
     @Override
@@ -420,6 +444,50 @@ public class BlogServiceImpl implements BlogService {
         return blogMapper.getPublishedByBlogId(blogId);
     }
 
+    @Override
+    public CategoriesAndTagsVO getCategoriesAndTags() {
+        CategoriesAndTagsVO categoriesAndTags = new CategoriesAndTagsVO();
+        categoriesAndTags.setCategories(categoryService.getCategoryList());
+        categoriesAndTags.setTags(tagService.getTagList());
+        return categoriesAndTags;
+    }
+
+    @Override
+    public BlogDetail getBlogDetail(Long id, String jwt) throws AuthException {
+        BlogDetail blog = this.getBlogByIdAndIsPublished(id);
+        // 对密码保护的文章校验Token
+        if (!"".equals(blog.getPassword())) {
+            if (JwtUtils.judgeTokenIsExist(jwt)) {
+                try {
+                    String subject = JwtUtils.getTokenBody(jwt).getSubject();
+                    if (subject.startsWith(JwtConstants.ADMIN_PREFIX)) {
+                        //博主身份Token
+                        String username = subject.replace(JwtConstants.ADMIN_PREFIX, "");
+                        User admin = (User) userService.loadUserByUsername(username);
+                        if (admin == null) {
+                            throw new AuthException("博主身份Token已失效，请重新登录！");
+                        }
+                    } else {
+                        //经密码验证后的Token
+                        Long tokenBlogId = Long.parseLong(subject);
+                        //博客id不匹配，验证不通过，可能博客id改变或客户端传递了其它密码保护文章的Token
+                        if (!tokenBlogId.equals(id)) {
+                            throw new AuthException("Token不匹配，请重新验证密码！");
+                        }
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    throw new AuthException("Token已失效，请重新验证密码！");
+                }
+            } else {
+                throw new AuthException("此文章受密码保护，请验证密码！");
+            }
+            blog.setPassword("");
+        }
+        this.updateViewsToRedis(id);
+        return blog;
+    }
+
     /**
      * 删除首页缓存、最新推荐缓存、归档页面缓存、博客浏览量缓存
      */
@@ -427,5 +495,95 @@ public class BlogServiceImpl implements BlogService {
         redisService.deleteCacheByKey(RedisKeyConstants.HOME_BLOG_INFO_LIST);
         redisService.deleteCacheByKey(RedisKeyConstants.NEW_BLOG_LIST);
         redisService.deleteCacheByKey(RedisKeyConstants.ARCHIVE_BLOG_MAP);
+    }
+
+
+    /**
+     * 执行博客添加或更新操作：校验参数是否合法，添加分类、标签，维护博客标签关联表
+     *
+     * @param blog 博客文章DTO
+     * @param type 添加或更新
+     */
+    private void saveOrUpdate(Blog blog, String type) {
+        //验证普通字段
+        if (StringUtils.isEmpty(blog.getTitle(), blog.getFirstPicture(), blog.getContent(), blog.getDescription())
+                || blog.getWords() == null || blog.getWords() < 0) {
+            throw new ValidateException("参数错误");
+        }
+
+        //处理分类
+        Object cate = blog.getCate();
+        if (cate == null) {
+            throw new ValidateException("分类不能为空");
+        }
+        if (cate instanceof Integer) {//选择了已存在的分类
+            Category c = categoryService.getCategoryById(((Integer) cate).longValue());
+            blog.setCategory(c);
+        } else if (cate instanceof String) {//添加新分类
+            //查询分类是否已存在
+            Category category = categoryService.getCategoryByName((String) cate);
+            if (category != null) {
+                throw new ValidateException("不可添加已存在的分类");
+            }
+            Category c = new Category();
+            c.setName((String) cate);
+            categoryService.saveCategory(c);
+            blog.setCategory(c);
+        } else {
+            throw new ValidateException("分类不正确");
+        }
+
+        //处理标签
+        List<Object> tagList = blog.getTagList();
+        List<Tag> tags = new ArrayList<>();
+        for (Object t : tagList) {
+            if (t instanceof Integer) {//选择了已存在的标签
+                Tag tag = tagService.getTagById(((Integer) t).longValue());
+                tags.add(tag);
+            } else if (t instanceof String) {//添加新标签
+                //查询标签是否已存在
+                Tag tag1 = tagService.getTagByName((String) t);
+                if (tag1 != null) {
+                    throw new ValidateException("不可添加已存在的标签");
+                }
+                Tag tag = new Tag();
+                tag.setName((String) t);
+                tagService.saveTag(tag);
+                tags.add(tag);
+            } else {
+                throw new ValidateException("标签不正确");
+            }
+        }
+
+        Date date = new Date();
+        if (blog.getReadTime() == null || blog.getReadTime() < 0) {
+            blog.setReadTime((int) Math.round(blog.getWords() / 200.0));//粗略计算阅读时长
+        }
+        if (blog.getViews() == null || blog.getViews() < 0) {
+            blog.setViews(0);
+        }
+        if ("save".equals(type)) {
+            blog.setCreateTime(date);
+            blog.setUpdateTime(date);
+            User user = new User();
+            user.setId(1L);//个人博客默认只有一个作者
+            blog.setUser(user);
+
+            this.saveBlog(blog);
+            //关联博客和标签(维护 blog_tag 表)
+            for (Tag t : tags) {
+                this.saveBlogTag(blog.getId(), t.getId());
+            }
+            this.saveBlog(blog);
+        } else {
+            blog.setUpdateTime(date);
+            this.updateBlog(blog);
+            //关联博客和标签(维护 blog_tag 表)
+            this.deleteBlogTagByBlogId(blog.getId());
+            for (Tag t : tags) {
+                this.saveBlogTag(blog.getId(), t.getId());
+            }
+            this.updateBlog(blog);
+        }
     }
 }

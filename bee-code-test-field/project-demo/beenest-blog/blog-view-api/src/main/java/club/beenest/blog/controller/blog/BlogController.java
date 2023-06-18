@@ -12,6 +12,7 @@ import club.beenest.blog.entity.user.User;
 import club.beenest.blog.service.blog.BlogService;
 import club.beenest.blog.service.user.impl.UserServiceImpl;
 import club.beenest.blog.support.constant.JwtConstants;
+import club.beenest.blog.support.exception.AuthException;
 import club.beenest.blog.support.log.annotation.VisitLogger;
 import club.beenest.blog.support.log.enums.VisitBehavior;
 import club.beenest.blog.support.request.PageResult;
@@ -59,38 +60,8 @@ public class BlogController {
 	@VisitLogger(VisitBehavior.BLOG)
 	@GetMapping("/blog")
 	public Result getBlog(@RequestParam Long id,
-	                      @RequestHeader(value = "Authorization", defaultValue = "") String jwt) {
-		BlogDetail blog = blogService.getBlogByIdAndIsPublished(id);
-		//对密码保护的文章校验Token
-		if (!"".equals(blog.getPassword())) {
-			if (JwtUtils.judgeTokenIsExist(jwt)) {
-				try {
-					String subject = JwtUtils.getTokenBody(jwt).getSubject();
-					if (subject.startsWith(JwtConstants.ADMIN_PREFIX)) {
-						//博主身份Token
-						String username = subject.replace(JwtConstants.ADMIN_PREFIX, "");
-						User admin = (User) userService.loadUserByUsername(username);
-						if (admin == null) {
-							return Result.create(403, "博主身份Token已失效，请重新登录！");
-						}
-					} else {
-						//经密码验证后的Token
-						Long tokenBlogId = Long.parseLong(subject);
-						//博客id不匹配，验证不通过，可能博客id改变或客户端传递了其它密码保护文章的Token
-						if (!tokenBlogId.equals(id)) {
-							return Result.create(403, "Token不匹配，请重新验证密码！");
-						}
-					}
-				} catch (Exception e) {
-					e.printStackTrace();
-					return Result.create(403, "Token已失效，请重新验证密码！");
-				}
-			} else {
-				return Result.create(403, "此文章受密码保护，请验证密码！");
-			}
-			blog.setPassword("");
-		}
-		blogService.updateViewsToRedis(id);
+						  @RequestHeader(value = "Authorization", defaultValue = "") String jwt) throws AuthException {
+		BlogDetail blog = blogService.getBlogDetail(id, jwt);
 		return Result.ok("获取成功", blog);
 	}
 

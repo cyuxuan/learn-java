@@ -12,8 +12,6 @@ import club.beenest.blog.service.tag.TagService;
 import club.beenest.blog.support.log.annotation.OperationLogger;
 import club.beenest.blog.support.request.Result;
 import club.beenest.blog.support.util.StringUtils;
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -66,14 +64,8 @@ public class BlogController {
                         @RequestParam(defaultValue = "") Integer categoryId,
                         @RequestParam(defaultValue = "1") Integer pageNum,
                         @RequestParam(defaultValue = "10") Integer pageSize) {
-        String orderBy = "create_time desc";
-        PageHelper.startPage(pageNum, pageSize, orderBy);
-        PageInfo<Blog> pageInfo = new PageInfo<>(blogService.getListByTitleAndCategoryId(title, categoryId));
-        List<Category> categories = categoryService.getCategoryList();
-        Map<String, Object> map = new HashMap<>(4);
-        map.put("blogs", pageInfo);
-        map.put("categories", categories);
-        return Result.ok("请求成功", map);
+        return Result.ok("请求成功",
+                blogService.getListByTitleAndCategoryIdForPage(title, categoryId, pageNum, pageSize));
     }
 
     /**
@@ -85,25 +77,18 @@ public class BlogController {
     @OperationLogger("删除博客")
     @DeleteMapping("/blog")
     public Result delete(@RequestParam Long id) {
-        blogService.deleteBlogTagByBlogId(id);
         blogService.deleteBlogById(id);
-        commentService.deleteCommentsByBlogId(id);
         return Result.ok("删除成功");
     }
 
     /**
      * 获取分类列表和标签列表
      *
-     * @return
+     * @return 分类列表和标签列表
      */
     @GetMapping("/categoryAndTag")
     public Result categoryAndTag() {
-        List<Category> categories = categoryService.getCategoryList();
-        List<Tag> tags = tagService.getTagList();
-        Map<String, Object> map = new HashMap<>(4);
-        map.put("categories", categories);
-        map.put("tags", tags);
-        return Result.ok("请求成功", map);
+        return Result.ok("请求成功", blogService.getCategoriesAndTags());
     }
 
     /**
@@ -164,113 +149,25 @@ public class BlogController {
      * 保存草稿或发布新文章
      *
      * @param blog 博客文章DTO
-     * @return
+     * @return 博客保存结果
      */
     @OperationLogger("发布博客")
     @PostMapping("/blog")
     public Result saveBlog(@RequestBody Blog blog) {
-        return getResult(blog, "save");
+        blogService.saveBlog(blog);
+        return Result.ok("新增博客成功", blog);
     }
 
     /**
      * 更新博客
      *
      * @param blog 博客文章DTO
-     * @return
+     * @return 博客更新结果
      */
     @OperationLogger("更新博客")
     @PutMapping("/blog")
     public Result updateBlog(@RequestBody Blog blog) {
-        return getResult(blog, "update");
-    }
-
-    /**
-     * 执行博客添加或更新操作：校验参数是否合法，添加分类、标签，维护博客标签关联表
-     *
-     * @param blog 博客文章DTO
-     * @param type 添加或更新
-     * @return
-     */
-    private Result getResult(Blog blog, String type) {
-        //验证普通字段
-        if (StringUtils.isEmpty(blog.getTitle(), blog.getFirstPicture(), blog.getContent(), blog.getDescription())
-                || blog.getWords() == null || blog.getWords() < 0) {
-            return Result.error("参数有误");
-        }
-
-        //处理分类
-        Object cate = blog.getCate();
-        if (cate == null) {
-            return Result.error("分类不能为空");
-        }
-        if (cate instanceof Integer) {//选择了已存在的分类
-            Category c = categoryService.getCategoryById(((Integer) cate).longValue());
-            blog.setCategory(c);
-        } else if (cate instanceof String) {//添加新分类
-            //查询分类是否已存在
-            Category category = categoryService.getCategoryByName((String) cate);
-            if (category != null) {
-                return Result.error("不可添加已存在的分类");
-            }
-            Category c = new Category();
-            c.setName((String) cate);
-            categoryService.saveCategory(c);
-            blog.setCategory(c);
-        } else {
-            return Result.error("分类不正确");
-        }
-
-        //处理标签
-        List<Object> tagList = blog.getTagList();
-        List<Tag> tags = new ArrayList<>();
-        for (Object t : tagList) {
-            if (t instanceof Integer) {//选择了已存在的标签
-                Tag tag = tagService.getTagById(((Integer) t).longValue());
-                tags.add(tag);
-            } else if (t instanceof String) {//添加新标签
-                //查询标签是否已存在
-                Tag tag1 = tagService.getTagByName((String) t);
-                if (tag1 != null) {
-                    return Result.error("不可添加已存在的标签");
-                }
-                Tag tag = new Tag();
-                tag.setName((String) t);
-                tagService.saveTag(tag);
-                tags.add(tag);
-            } else {
-                return Result.error("标签不正确");
-            }
-        }
-
-        Date date = new Date();
-        if (blog.getReadTime() == null || blog.getReadTime() < 0) {
-            blog.setReadTime((int) Math.round(blog.getWords() / 200.0));//粗略计算阅读时长
-        }
-        if (blog.getViews() == null || blog.getViews() < 0) {
-            blog.setViews(0);
-        }
-        if ("save".equals(type)) {
-            blog.setCreateTime(date);
-            blog.setUpdateTime(date);
-            User user = new User();
-            user.setId(1L);//个人博客默认只有一个作者
-            blog.setUser(user);
-
-            blogService.saveBlog(blog);
-            //关联博客和标签(维护 blog_tag 表)
-            for (Tag t : tags) {
-                blogService.saveBlogTag(blog.getId(), t.getId());
-            }
-            return Result.ok("添加成功");
-        } else {
-            blog.setUpdateTime(date);
-            blogService.updateBlog(blog);
-            //关联博客和标签(维护 blog_tag 表)
-            blogService.deleteBlogTagByBlogId(blog.getId());
-            for (Tag t : tags) {
-                blogService.saveBlogTag(blog.getId(), t.getId());
-            }
-            return Result.ok("更新成功");
-        }
+        blogService.updateBlog(blog);
+        return Result.ok("更新博客成功", blog);
     }
 }

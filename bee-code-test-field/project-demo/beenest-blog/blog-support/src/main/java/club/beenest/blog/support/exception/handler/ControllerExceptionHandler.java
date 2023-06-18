@@ -1,5 +1,6 @@
 package club.beenest.blog.support.exception.handler;
 
+import club.beenest.blog.support.exception.AuthException;
 import club.beenest.blog.support.exception.NotFoundException;
 import club.beenest.blog.support.exception.PersistenceException;
 import club.beenest.blog.support.request.Result;
@@ -63,6 +64,19 @@ public class ControllerExceptionHandler {
     }
 
     /**
+     * 捕获权限校验异常
+     *
+     * @param request 请求
+     * @param e       自定义抛出的异常信息
+     * @return
+     */
+    @ExceptionHandler(AuthException.class)
+    public Result authExceptionHandler(HttpServletRequest request, AuthException e) {
+        logger.error("Request URL : {}, Exception :", request.getRequestURL(), e);
+        return Result.create(403, e.getMessage());
+    }
+
+    /**
      * 捕获其它异常
      *
      * @param request 请求
@@ -74,4 +88,11 @@ public class ControllerExceptionHandler {
         logger.error("Request URL : {}, Exception :", request.getRequestURL(), e);
         return Result.create(500, "异常错误");
     }
+
+    public Result validatorException(HttpServletRequest request, Exception e) {
+        logger.error("Request URL : {}, Exception :", request.getRequestURL(), e);
+        return Result.create(500, e.getMessage());
+    }
+
+
 }

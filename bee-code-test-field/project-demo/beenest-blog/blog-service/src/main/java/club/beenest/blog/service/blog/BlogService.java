@@ -3,7 +3,10 @@ package club.beenest.blog.service.blog;
 
 import club.beenest.blog.entity.blog.*;
 import club.beenest.blog.entity.search.SearchBlog;
+import club.beenest.blog.support.exception.AuthException;
 import club.beenest.blog.support.request.PageResult;
+import club.beenest.blog.vo.blog.BlogsAndCategoriesVO;
+import club.beenest.blog.vo.category.CategoriesAndTagsVO;
 
 import java.util.List;
 import java.util.Map;
@@ -15,7 +18,8 @@ import java.util.Map;
  * @since 1.0
  */
 public interface BlogService {
-    List<Blog> getListByTitleAndCategoryId(String title, Integer categoryId);
+    BlogsAndCategoriesVO getListByTitleAndCategoryIdForPage(String title,
+                                                            Integer categoryId, Integer pageNum, Integer pageSize);
 
     List<SearchBlog> getSearchBlogListByQueryAndIsPublished(String query);
 
@@ -33,6 +37,12 @@ public interface BlogService {
 
     List<RandomBlog> getRandomBlogListByLimitNumAndIsPublishedAndIsRecommend();
 
+    /**
+     * 通过id删除博客数据
+     * 同时删除博客对应的tag以及博客对应的评论信息
+     *
+     * @param id 博客id
+     */
     void deleteBlogById(Long id);
 
     void deleteBlogTagByBlogId(Long blogId);
@@ -70,4 +80,20 @@ public interface BlogService {
     Boolean getCommentEnabledByBlogId(Long blogId);
 
     Boolean getPublishedByBlogId(Long blogId);
+
+    /**
+     * 获取分类和标签数据
+     *
+     * @return 分类和标签数据
+     */
+    CategoriesAndTagsVO getCategoriesAndTags();
+
+    /**
+     * 获取博客信息
+     *
+     * @param id 查询条件
+     * @param jwt token信息
+     * @return 查询到的博客信息
+     */
+    BlogDetail getBlogDetail(Long id, String jwt) throws AuthException;
 }

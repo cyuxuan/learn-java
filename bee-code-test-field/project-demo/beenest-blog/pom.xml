@@ -116,6 +116,12 @@
             <artifactId>pagehelper-spring-boot-starter</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>com.github.jsqlparser</groupId>
+            <artifactId>jsqlparser</artifactId>
+            <version>2.0</version>
+        </dependency>
+
         <!-- configuration processor -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

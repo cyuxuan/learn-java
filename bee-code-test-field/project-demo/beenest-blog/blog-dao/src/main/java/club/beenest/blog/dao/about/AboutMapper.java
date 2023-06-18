@@ -1,6 +1,7 @@
 package club.beenest.blog.dao.about;
 
 import club.beenest.blog.entity.about.About;
+import club.beenest.blog.vo.about.AdminAboutVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -16,9 +17,9 @@ import java.util.List;
 @Mapper
 @Repository
 public interface AboutMapper {
-	List<About> getList();
+	About selectAboutByUserId(@Param("userId") long userId);
 
-	int updateAbout(@Param("nameEn") String nameEn, @Param("value") String value);
+	int updateAbout(@Param("v") AdminAboutVO adminAbout);
 
-	String getAboutCommentEnabled();
+	Boolean getAboutCommentEnabled(long id);
 }

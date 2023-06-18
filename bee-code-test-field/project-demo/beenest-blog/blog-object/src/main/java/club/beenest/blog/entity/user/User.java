@@ -31,6 +31,7 @@ public class User implements UserDetails {
 	private Date createTime;
 	private Date updateTime;
 	private String role;
+	private long userId;
 
 	@JsonIgnore
 	@Override
@@ -136,5 +137,13 @@ public class User implements UserDetails {
 
 	public void setRole(String role) {
 		this.role = role;
+	}
+
+	public long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(long userId) {
+		this.userId = userId;
 	}
 }

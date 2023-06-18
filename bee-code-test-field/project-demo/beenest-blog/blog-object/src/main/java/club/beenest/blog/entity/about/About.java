@@ -1,59 +1,44 @@
 package club.beenest.blog.entity.about;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+
 /**
  * 关于我
  *
  * @author 陈玉轩
  * @since 1.0
  */
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@ToString
 public class About {
-	private Long id;
-	private String nameEn;
-	private String nameZh;
-	private String value;
+    /**
+     * 物理主键
+     */
+    private Long id;
 
-	public About() {
-	}
+    private String nameEn;
 
-	public Long getId() {
-		return id;
-	}
+    private String nameZh;
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    private String value;
 
-	public String getNameEn() {
-		return nameEn;
-	}
+    /**
+     * 标题
+     */
+    private String title;
 
-	public void setNameEn(String nameEn) {
-		this.nameEn = nameEn;
-	}
+    /**
+     * 内容信息
+     */
+    private String content;
 
-	public String getNameZh() {
-		return nameZh;
-	}
-
-	public void setNameZh(String nameZh) {
-		this.nameZh = nameZh;
-	}
-
-	public String getValue() {
-		return value;
-	}
-
-	public void setValue(String value) {
-		this.value = value;
-	}
-
-	@Override
-	public String toString() {
-		return "About{" +
-				"id=" + id +
-				", nameEn='" + nameEn + '\'' +
-				", nameZh='" + nameZh + '\'' +
-				", value='" + value + '\'' +
-				'}';
-	}
+    /**
+     * 是否开启评论
+     */
+    private boolean commentEnable;
 }

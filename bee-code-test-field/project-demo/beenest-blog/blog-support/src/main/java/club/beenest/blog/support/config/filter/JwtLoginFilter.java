@@ -83,12 +83,13 @@ public class JwtLoginFilter extends AbstractAuthenticationProcessingFilter {
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response,
                                             FilterChain chain, Authentication authResult) throws IOException {
-        String jwt = JwtUtils.generateToken(authResult.getName(), authResult.getAuthorities());
+
         response.setContentType("application/json;charset=utf-8");
         User user = (User) authResult.getPrincipal();
         user.setPassword(null);
         Map<String, Object> map = new HashMap<>(4);
         map.put("user", user);
+        String jwt = JwtUtils.generateToken(user.getUserId(), authResult.getName(), authResult.getAuthorities());
         map.put("token", jwt);
         Result result = Result.ok(I18NConstant.LOGIN_SUCCESS, map);
         PrintWriter out = response.getWriter();
@@ -104,7 +105,7 @@ public class JwtLoginFilter extends AbstractAuthenticationProcessingFilter {
                                               AuthenticationException exception) throws IOException {
         response.setContentType("application/json;charset=utf-8");
         String msg = exception.getMessage();
-        //登录不成功时，会抛出对应的异常
+        // 登录不成功时，会抛出对应的异常
         if (exception instanceof LockedException) {
             // 账号被锁定
             msg = I18NConstant.ACCOUNT_LOCK;

@@ -2,6 +2,7 @@ package club.beenest.blog.service.category;
 
 
 import club.beenest.blog.entity.catagory.Category;
+import com.github.pagehelper.PageInfo;
 
 import java.util.List;
 
@@ -13,6 +14,8 @@ import java.util.List;
  */
 public interface CategoryService {
     List<Category> getCategoryList();
+
+    PageInfo<Category> getCategoryListForPage(Integer pageNum, Integer pageSize, Category category);
 
     List<Category> getCategoryNameList();
 

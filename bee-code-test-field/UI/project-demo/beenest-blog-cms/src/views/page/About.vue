@@ -1,19 +1,16 @@
 <template>
 	<div>
 		<el-form :model="form" :rules="formRules" ref="formRef" label-position="top">
-			<el-form-item label="标题" prop="title" style="width: 50%">
-				<el-input v-model="form.title" placeholder="请输入标题"></el-input>
-			</el-form-item>
-
-			<el-row :gutter="20" style="width: 50%">
-				<el-col :span="12">
-					<el-form-item label="网易云歌曲ID" prop="musicId">
-						<el-input v-model="form.musicId" type="number" placeholder="请输入网易云歌曲ID（可选）"></el-input>
+			<el-row>
+				<el-col :span="11">
+					<el-form-item label="标题" prop="title" style="width: 40%" >
+						<el-input v-model="form.title" placeholder="请输入标题"></el-input>
 					</el-form-item>
 				</el-col>
-				<el-col :span="12">
-					<el-form-item label="评论开关">
-						<el-switch v-model="form.commentEnabled" active-text="评论"></el-switch>
+
+				<el-col :span="3">
+					<el-form-item label="评论开关" >
+						<el-switch v-model="form.commentEnable" active-text="评论"></el-switch>
 					</el-form-item>
 				</el-col>
 			</el-row>
@@ -42,7 +39,7 @@
 					title: '',
 					musicId: null,
 					content: '',
-					commentEnabled: true
+					commentEnable: true
 				},
 				formRules: {
 					title: [{required: true, message: '请输入标题', trigger: 'change'}],
@@ -58,17 +55,12 @@
 					this.form.title = res.data.title
 					this.form.musicId = res.data.musicId
 					this.form.content = res.data.content
-					this.form.commentEnabled = res.data.commentEnabled === 'true' ? true : false
+					this.form.commentEnable = res.data.commentEnable
 				})
 			},
 			submit() {
 				this.$refs.formRef.validate(valid => {
 					if (valid) {
-						//纯数字
-						const reg = /^\d{1,}$/
-						if (!reg.test(this.form.musicId)) {
-							return this.msgError("歌曲ID有误")
-						}
 						updateAbout(this.form).then(res => {
 							this.msgSuccess(res.msg)
 						})

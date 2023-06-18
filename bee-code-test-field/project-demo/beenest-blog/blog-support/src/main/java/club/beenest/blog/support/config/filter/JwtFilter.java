@@ -4,6 +4,9 @@
 
 package club.beenest.blog.support.config.filter;
 
+import club.beenest.blog.support.auth.RequestContext;
+import club.beenest.blog.support.auth.RequestContextManager;
+import club.beenest.blog.support.auth.SecurityUser;
 import club.beenest.blog.support.i18n.I18NConstant;
 import club.beenest.blog.support.request.HttpCode;
 import club.beenest.blog.support.request.Result;
@@ -51,11 +54,19 @@ public class JwtFilter extends GenericFilterBean {
                 Claims claims = JwtUtils.getTokenBody(jwt);
                 // 获取用户名称
                 String username = claims.getSubject();
+                long userId = Long.parseLong(claims.getAudience());
+                // 获取用户id
                 List<GrantedAuthority> authorities =
                         AuthorityUtils.commaSeparatedStringToAuthorityList((String) claims.get("authorities"));
                 UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(username, null, authorities);
                 // 将token设置到上下文中
                 SecurityContextHolder.getContext().setAuthentication(token);
+                // 将用户id设置到上下文中
+                RequestContext requestContext = new RequestContext();
+                SecurityUser securityUser = new SecurityUser();
+                securityUser.setUserId(userId);
+                requestContext.setSecurityUser(securityUser);
+                RequestContextManager.init(requestContext);
             } catch (Exception e) {
                 e.printStackTrace();
                 response.setContentType("application/json;charset=utf-8");

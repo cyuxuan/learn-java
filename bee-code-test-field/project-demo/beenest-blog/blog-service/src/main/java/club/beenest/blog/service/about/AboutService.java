@@ -1,13 +1,16 @@
 package club.beenest.blog.service.about;
 
+import club.beenest.blog.entity.about.About;
+import club.beenest.blog.vo.about.AdminAboutVO;
+
 import java.util.Map;
 
 public interface AboutService {
-	Map<String, String> getAboutInfo();
+	About getAboutInfo();
 
-	Map<String, String> getAboutSetting();
+	About getAboutSetting();
 
-	void updateAbout(Map<String, String> map);
+	void updateAbout(AdminAboutVO adminAbout);
 
 	boolean getAboutCommentEnabled();
 }
