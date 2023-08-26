@@ -1,7 +1,7 @@
 #! /bin/bash
 
 #
-# Copyright ©2023-2023 BeeNest Club. Some rights reserved.
+# Copyright ©2023-2023 BeeNest Club. All rights reserved.
 #
 
 ## 录取镜像

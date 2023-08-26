@@ -1,5 +1,5 @@
 /*
- * Copyright ©2023-2023 BeeNest Club. Some rights reserved.
+ * Copyright ©2023-2023 BeeNest Club. All rights reserved.
  */
 
 package club.beenest.code.analyse.controller;

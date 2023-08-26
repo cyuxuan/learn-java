@@ -1,18 +1,23 @@
 #! /bin/bash
 #
-# Copyright ©2023-2023 BeeNest Club. Some rights reserved.
+# Copyright ©2023-2023 BeeNest Club. All rights reserved.
 #
 
 ## docker安装脚本
 
 ## 创建docker安装目录
 mkdir -p /usr/local/software/docker
+
+## 进入docker安装牡蛎
+cd /usr/local/software/docker
+
+## 创建对应的压缩包接收文件
 touch docker-23.0.0.tgz
+
 ## 获取docker资源
 curl https://mirrors.tuna.tsinghua.edu.cn/docker-ce/linux/static/stable/x86_64/docker-23.0.0.tgz -o /usr/local/software/docker/docker-23.0.0.tgz
 
 ## 解压docker文件
-cd /usr/local/software/docker
 tar -xzvf docker-23.0.0.tgz
 
 ## 复制解压出来的可执行文件到执行目录里中
