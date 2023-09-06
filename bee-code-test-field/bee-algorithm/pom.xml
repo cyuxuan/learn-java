@@ -16,4 +16,12 @@
         <maven.compiler.target>17</maven.compiler.target>
     </properties>
 
+    <!--  引入poi依赖  -->
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi</artifactId>
+            <version>5.0.0</version>
+        </dependency>
+    </dependencies>
 </project>
