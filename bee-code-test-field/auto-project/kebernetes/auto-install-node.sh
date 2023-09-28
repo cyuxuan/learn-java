@@ -44,7 +44,8 @@ sudo systemctl restart docker
 
 
 # 各个机器设置自己的域名
-echo "10.8.0.10  cluster-endpoint" >> /etc/hosts
+#echo "10.8.0.10  cluster-endpoint" >> /etc/hosts
+#echo "10.8.0.20  cluster-endpoint2" >> /etc/hosts
 
 systemctl stop firewalld
 systemctl disable firewalld

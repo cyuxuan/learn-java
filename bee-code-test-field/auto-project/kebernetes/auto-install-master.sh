@@ -81,6 +81,7 @@ sudo yum install -y kubelet-1.20.9 kubeadm-1.20.9 kubectl-1.20.9 --disableexclud
 
 sudo systemctl enable --now kubelet
 
+cd ~
 sudo tee ./images.sh <<-'EOF'
 #!/bin/bash
 images=(

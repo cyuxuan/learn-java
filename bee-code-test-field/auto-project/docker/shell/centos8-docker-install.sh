@@ -208,6 +208,14 @@ kubectl get svc -A |grep kubernetes-dashboard
 # 浏览器空白处输入 thisisunsafe
 
 
+## 生成控制面板的访问账号
+#kubectl create serviceaccount kubernetes-dashboard-admin
+#kubectl create clusterrolebinding kubernetes-dashboard-admin --serviceaccount=default:kubernetes-dashboard-admin --clusterrole=cluster-admin
+#kubectl describe secret $(kubectl get secret -n default | grep kubernetes-dashboard-admin | awk '{print $1}')
+
+
+
+## 下面是生成控制面板账号数据
 ### 查看证书情况
 #kubectl -n kubernetes-dashboard describe secret $(kubectl -n kubernetes-dashboard get secret | grep admin-user | awk '{print $1}')
 #
@@ -217,13 +225,16 @@ kubectl get svc -A |grep kubernetes-dashboard
 #
 #(umask 077;openssl genrsa -out dashboard.key 2048)
 #
-#openssl req -new -key dashboard.key -out dashboard.csr -subj "/O=wangtianpei/CN=dashboard" #如果要用域名访问, CN一定要和域名保持一致
+#openssl req -new -key dashboard.key -out dashboard.csr -subj "/O=cyuxuan/CN=10.8.0.10" #如果要用域名访问, CN一定要和域名保持一致
 #
 #openssl x509 -req -in dashboard.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out dashboard.crt -days 3650
 #
 ##拷贝到各个节点
-#scp -r /etc/kubernetes/pki/dashboard/ local-centos8-k8s-node1:/etc/kubernetes/pki/
-#scp -r /etc/kubernetes/pki/dashboard/ local-centos8-k8s-node2:/etc/kubernetes/pki/
+#scp -r /etc/kubernetes/pki/dashboard/ local-centos8-k8s-node01:/etc/kubernetes/pki/
+#scp -r /etc/kubernetes/pki/dashboard/ local-centos8-k8s-node02:/etc/kubernetes/pki/
+#scp -r /etc/kubernetes/pki/dashboard/ local-centos8-k8s-node03:/etc/kubernetes/pki/
+## 生成控制面板账号数据结束
+
 
 ## 获取dashboard的token
 #kubectl get secret -n kube-system |grep dashboard-admin
@@ -247,6 +258,25 @@ kubectl get svc -A |grep kubernetes-dashboard
 kubeadm init phase upload-certs --upload-certs
 kubeadm token create --print-join-command
 
+
+
+9d32c96e68871695c4f261080a3287340a2ddcdebf9fd44a59447498aafc896d
+kubeadm join cluster-endpoint:6443 --token 0t7pa5.ehl4yycmfkk695r5 --discovery-token-ca-cert-hash sha256:ba3da7fc372a177206a3be25808f7eb0fa456876492290b840e5898582d3fcdd --control-plane --certificate-key 9d32c96e68871695c4f261080a3287340a2ddcdebf9fd44a59447498aafc896d
+
+
+
+f24de9ad084a77787dd6f377a1e038a128f9bb3fd3a58b3da422f42901a6758b
+kubeadm join cluster-endpoint:6443 --token 05kpmg.9tca453bm1yxcy0a     --discovery-token-ca-cert-hash sha256:fb704890bd7e3dfb96e208f456726adb9fa27d48a21106436fbfa46eb401d425 --control-plane --certificate-key f24de9ad084a77787dd6f377a1e038a128f9bb3fd3a58b3da422f42901a6758b
+
+3ae90e3c262e7bb3a4b7c59331f0673bda05836ae2a879a376a68e504f8ad1aa
+kubeadm join cluster-endpoint:6443 --token upx48y.yyc25aqr049g5syk     --discovery-token-ca-cert-hash sha256:026c2d5bcf5811306a5da17d6eb0d2bdc0c1a2d497bb60c54f2e8f26523babf2 --control-plane --certificate-key 3ae90e3c262e7bb3a4b7c59331f0673bda05836ae2a879a376a68e504f8ad1aa
+
+
+
+
+mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
 
 
 
