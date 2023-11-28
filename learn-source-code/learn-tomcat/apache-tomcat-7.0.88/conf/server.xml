@@ -20,17 +20,22 @@
      Documentation at /docs/config/server.html
  -->
 <Server port="8005" shutdown="SHUTDOWN">
+  <!-- 以日志形式输出服务器、操作系统、JVM的版本信息 在Server初始化之前打印操作系统信息-->
   <Listener className="org.apache.catalina.startup.VersionLoggerListener" />
   <!-- Security listener. Documentation at /docs/config/listeners.html
   <Listener className="org.apache.catalina.security.SecurityListener" />
   -->
   <!--APR library loader. Documentation at /docs/apr.html -->
+  <!-- 在Server初始化之前加载APR库，并于Server停止之后销毁 -->
   <Listener className="org.apache.catalina.core.AprLifecycleListener" SSLEngine="on" />
   <!--Initialize Jasper prior to webapps are loaded. Documentation at /docs/jasper-howto.html -->
   <Listener className="org.apache.catalina.core.JasperListener" />
   <!-- Prevent memory leaks due to use of particular java/javax APIs-->
+  <!-- 在Server初始化之前调用，解决单例对象创建导致的JVM内存泄露问题及锁文件问题 -->
   <Listener className="org.apache.catalina.core.JreMemoryLeakPreventionListener" />
+  <!-- 在Server启动时将JNDI资源注册为Mbean进行管理 -->
   <Listener className="org.apache.catalina.mbeans.GlobalResourcesLifecycleListener" />
+  <!-- 用于在Context停止时重建Executor池中的线程，避免导致内存泄漏 -->
   <Listener className="org.apache.catalina.core.ThreadLocalLeakPreventionListener" />
 
   <!-- Global JNDI resources
@@ -39,6 +44,7 @@
   <GlobalNamingResources>
     <!-- Editable user database that can also be used by
          UserDatabaseRealm to authenticate users
+         可编辑的用户数据库，能够被UserDatabaseRealm用来认证用户
     -->
     <Resource name="UserDatabase" auth="Container"
               type="org.apache.catalina.UserDatabase"

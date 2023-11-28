@@ -2137,6 +2137,7 @@ public class Digester extends DefaultHandler2 {
      * @param className Default Java class name to be created
      * @param attributeName Attribute name that optionally overrides
      *  the default Java class name to be created
+     *  属性名称,选择要创建覆盖默认的Java类名
      * @see ObjectCreateRule
      */
     public void addObjectCreate(String pattern, String className,

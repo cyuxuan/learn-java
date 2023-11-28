@@ -47,7 +47,8 @@ kubectl describe pod -n istio-system jaeger-collector-8ffdd777c-l5xmz
 
 kubectl logs -n istio-system jaeger-collector-8ffdd777c-l5xmz
 
-
+kubesphere-devops-system       devops-apiserver-7576cfc79c-gxxp9
+kubectl describe pod -n kubesphere-devops-system devops-apiserver-7576cfc79c-gxxp9
 
 
 ./kk add nodes -f config-sample.yaml

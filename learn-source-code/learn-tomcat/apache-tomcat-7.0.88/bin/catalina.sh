@@ -24,14 +24,18 @@
 #   setenv.sh in CATALINA_BASE/bin to keep your customizations separate.
 #
 #   CATALINA_HOME   May point at your Catalina "build" directory.
+#                   可以指向你的Catalina“build”目录。
 #
 #   CATALINA_BASE   (Optional) Base directory for resolving dynamic portions
 #                   of a Catalina installation.  If not present, resolves to
 #                   the same directory that CATALINA_HOME points to.
+#                   (可选)用于解析Catalina安装的动态部分的base目录。如果不存在，则解析到CATALINA_HOME所指向的目录。
 #
 #   CATALINA_OUT    (Optional) Full path to a file where stdout and stderr
 #                   will be redirected.
 #                   Default is $CATALINA_BASE/logs/catalina.out
+#                   (可选)stdout和stderr将被重定向的文件的完整路径。
+#                   默认是$CATALINA_BASE/logs/catalina.out
 #
 #   CATALINA_OPTS   (Optional) Java runtime options used when the "start",
 #                   "run" or "debug" command is executed.
@@ -39,6 +43,9 @@
 #                   only be used by Tomcat itself, not by the stop process,
 #                   the version command etc.
 #                   Examples are heap size, GC logging, JMX ports etc.
+#                   (可选)执行“start”、“run”或“debug”命令时的Java运行时选项。
+#                   在这里包含所有选项，而不是在JAVA_OPTS中，这应该只由Tomcat本身使用，
+#                   而不是由stop进程，版本命令等。例如堆大小、GC日志记录、JMX端口等。
 #
 #   CATALINA_TMPDIR (Optional) Directory path location of temporary directory
 #                   the JVM should use (java.io.tmpdir).  Defaults to
@@ -106,18 +113,24 @@
 # -----------------------------------------------------------------------------
 
 # OS specific support.  $var _must_ be set to either true or false.
+# 对于一些特殊操作系统的支持。变量必须设置为true或者false
 cygwin=false
 darwin=false
 os400=false
 hpux=false
 case "`uname`" in
+# Cygwin是一个用于Windows系统上的Linux环境模拟器。
 CYGWIN*) cygwin=true;;
+# darwin是一个操作系统，它基于Mac OS X，是苹果公司开发的。
 Darwin*) darwin=true;;
+# os400是一个操作系统，它是IBM公司开发的，主要用于IBM的大型机系统。
 OS400*) os400=true;;
+# hp-ux是一个操作系统，它是HP公司开发的，主要用于HP大型机系统。
 HP-UX*) hpux=true;;
 esac
 
 # resolve links - $0 may be a softlink
+# 解析链接 - $0 可能是一个软链接
 PRG="$0"
 
 while [ -h "$PRG" ]; do
@@ -131,18 +144,23 @@ while [ -h "$PRG" ]; do
 done
 
 # Get standard environment variables
+# 获取标准环境变量
 PRGDIR=`dirname "$PRG"`
 
 # Only set CATALINA_HOME if not already set
+#  仅当CATALINA_HOME没有被设置时，才设置CATALINA_HOME
 [ -z "$CATALINA_HOME" ] && CATALINA_HOME=`cd "$PRGDIR/.." >/dev/null; pwd`
 
 # Copy CATALINA_BASE from CATALINA_HOME if not already set
+# 如果CATALINA_BASE没有被设置，则从CATALINA_HOME复制到CATALINA_BASE
 [ -z "$CATALINA_BASE" ] && CATALINA_BASE="$CATALINA_HOME"
 
 # Ensure that any user defined CLASSPATH variables are not used on startup,
 # but allow them to be specified in setenv.sh, in rare case when it is needed.
+# 确保任何用户定义的CLASSPATH变量在启动时不被使用，但允许在setenv.sh中指定它们，在罕见的情况下，需要它们。
 CLASSPATH=
 
+# 调用setenv设置环境参数 VM参数等
 if [ -r "$CATALINA_BASE/bin/setenv.sh" ]; then
   . "$CATALINA_BASE/bin/setenv.sh"
 elif [ -r "$CATALINA_HOME/bin/setenv.sh" ]; then
@@ -150,6 +168,7 @@ elif [ -r "$CATALINA_HOME/bin/setenv.sh" ]; then
 fi
 
 # For Cygwin, ensure paths are in UNIX format before anything is touched
+# 针对Cygwin，在使用之前确保路径是UNIX格式的
 if $cygwin; then
   [ -n "$JAVA_HOME" ] && JAVA_HOME=`cygpath --unix "$JAVA_HOME"`
   [ -n "$JRE_HOME" ] && JRE_HOME=`cygpath --unix "$JRE_HOME"`
@@ -163,6 +182,7 @@ if $os400; then
   # Set job priority to standard for interactive (interactive - 6) by using
   # the interactive priority - 6, the helper threads that respond to requests
   # will be running at the same priority as interactive jobs.
+  #
   COMMAND='chgjob job('$JOBNAME') runpty(6)'
   system $COMMAND
 
@@ -188,6 +208,7 @@ else
 fi
 
 # Add on extra jar files to CLASSPATH
+# 向CLASSPATH添加额外的jar文件
 if [ ! -z "$CLASSPATH" ] ; then
   CLASSPATH="$CLASSPATH":
 fi
@@ -199,11 +220,14 @@ fi
 
 if [ -z "$CATALINA_TMPDIR" ] ; then
   # Define the java.io.tmpdir to use for Catalina
+  # 定义用于Catalina的java.io.tmpdir
   CATALINA_TMPDIR="$CATALINA_BASE"/temp
 fi
 
 # Add tomcat-juli.jar to classpath
+# 将tomcat- julia .jar添加到类路径中
 # tomcat-juli.jar can be over-ridden per instance
+# tomcat- julia .jar可以被每个实例覆盖
 if [ -r "$CATALINA_BASE/bin/tomcat-juli.jar" ] ; then
   CLASSPATH=$CLASSPATH:$CATALINA_BASE/bin/tomcat-juli.jar
 else

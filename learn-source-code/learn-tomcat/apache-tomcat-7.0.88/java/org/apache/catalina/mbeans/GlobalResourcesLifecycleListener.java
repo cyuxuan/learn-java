@@ -70,7 +70,8 @@ public class GlobalResourcesLifecycleListener
 
 
     /**
-     * Primary entry point for startup and shutdown events.
+     * Primary entry point for startup and shutdown events
+     * 启动和关闭事件的主要入口点.
      *
      * @param event The event that has occurred
      */

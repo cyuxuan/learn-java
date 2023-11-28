@@ -320,14 +320,18 @@ public class Catalina {
         digester.setUseContextClassLoader(true);
 
         // Configure the actions we will be using
+        // 参考 https://www.jianshu.com/p/8d9a6ae40303
+        // 匹配到Server实例时创建默认的实例如果存在attributeName指定的对象则创建指定对象的实例
         digester.addObjectCreate("Server",
                                  "org.apache.catalina.core.StandardServer",
                                  "className");
+        // 将Server节点中的属性值映射到上面创建的对象中
         digester.addSetProperties("Server");
+        // 调用父节点的方法，整个文件的父节点就是当前Catalina类，所以这里调用的时Catalina的setServer方法
         digester.addSetNext("Server",
                             "setServer",
                             "org.apache.catalina.Server");
-
+        // 服务于全局的 JNDI 资源
         digester.addObjectCreate("Server/GlobalNamingResources",
                                  "org.apache.catalina.deploy.NamingResources");
         digester.addSetProperties("Server/GlobalNamingResources");
@@ -335,6 +339,7 @@ public class Catalina {
                             "setGlobalNamingResources",
                             "org.apache.catalina.deploy.NamingResources");
 
+        // 这个节点必须要设置自己的监听器
         digester.addObjectCreate("Server/Listener",
                                  null, // MUST be specified in the element
                                  "className");
@@ -342,7 +347,10 @@ public class Catalina {
         digester.addSetNext("Server/Listener",
                             "addLifecycleListener",
                             "org.apache.catalina.LifecycleListener");
+        // 上面都是在构造Server实例，并将Server实例赋值给Catalina
 
+
+        // 开始构造 Service
         digester.addObjectCreate("Server/Service",
                                  "org.apache.catalina.core.StandardService",
                                  "className");

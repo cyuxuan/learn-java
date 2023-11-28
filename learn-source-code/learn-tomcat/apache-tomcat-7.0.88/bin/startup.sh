@@ -17,8 +17,12 @@
 
 # -----------------------------------------------------------------------------
 # Start Script for the CATALINA Server
+# 启动CATALINA服务器的脚本
 # -----------------------------------------------------------------------------
 
+# os400是 IBM的AIX
+# darwin是MacOSX 操作环境的操作系统成份
+# Darwin是windows平台上运行的类UNIX模拟环境
 # Better OS/400 detection: see Bugzilla 31132
 os400=false
 case "`uname`" in

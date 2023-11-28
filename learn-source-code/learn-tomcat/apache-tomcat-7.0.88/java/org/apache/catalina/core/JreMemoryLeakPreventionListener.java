@@ -244,38 +244,51 @@ public class JreMemoryLeakPreventionListener implements LifecycleListener {
     @Override
     public void lifecycleEvent(LifecycleEvent event) {
         // Initialise these classes when Tomcat starts
+        // tomcat启动时初始化这个类
         if (Lifecycle.BEFORE_INIT_EVENT.equals(event.getType())) {
-
+            // 获取当前线程的 类加载器
             ClassLoader loader = Thread.currentThread().getContextClassLoader();
 
             try
             {
                 // Use the system classloader as the victim for all this
                 // ClassLoader pinning we're about to do.
+                // 使用系统类加载器作为我们即将要做的所有类加载器的 (固定受害者？)
                 Thread.currentThread().setContextClassLoader(
                         ClassLoader.getSystemClassLoader());
 
                 /*
                  * First call to this loads all drivers in the current class
                  * loader
+                 * 第一次调用它会加载当前类加载器中的所有驱动程序
                  */
                 if (driverManagerProtection) {
                     DriverManager.getDrivers();
                 }
 
                 /*
+                 * 几个组件最终调用
                  * Several components end up calling:
                  * sun.awt.AppContext.getAppContext()
                  *
                  * Those libraries / components known to trigger memory leaks
                  * due to eventual calls to getAppContext() are:
+                 * 已知会由于最终调用getAppContext()而触发内存泄漏的库/组件包括(下面这些):
+                 * 下面这些组件回引发内存泄露
                  * - Google Web Toolkit via its use of javax.imageio
+                 * Tomcat是因为使用了 java.beans.Introspector.flushCaches() 在
+                 * 1.6.0_15 to 1.7.0_01版本中
+                 * 从 1.7.0_02  AppContext的使用从Introspector.flushCaches()
+                 * 替换为ThreadGroupContext
                  * - Tomcat via its use of java.beans.Introspector.flushCaches()
                  *   in 1.6.0_15 to 1.7.0_01. From 1.7.0_02 onwards use of
                  *   AppContext by Introspector.flushCaches() was replaced with
                  *   ThreadGroupContext
                  * - others TBD
                  *
+                 * 从 1.7.0_25 版本起，
+                 * 调用sun.awt.AppContext.getAppContext()会启动一个名为AWT-AppKit的线程
+                 * 该线程需要一个可用的图形环境。
                  * From 1.7.0_25 onwards, a call to
                  * sun.awt.AppContext.getAppContext() results in a thread being
                  * started named AWT-AppKit that requires a graphic environment
@@ -310,14 +323,14 @@ public class JreMemoryLeakPreventionListener implements LifecycleListener {
                 /*
                  * Several components end up calling
                  * sun.misc.GC.requestLatency(long) which creates a daemon
-                 * thread without setting the TCCL.
+                 * thread without setting the TCCL(线程上下文类加载器).
                  *
                  * Those libraries / components known to trigger memory leaks
                  * due to eventual calls to requestLatency(long) are:
                  * - javax.management.remote.rmi.RMIConnectorServer.start()
                  *
                  * Note: Long.MAX_VALUE is a special case that causes the thread
-                 *       to terminate
+                 *       to terminate(终止)
                  *
                  */
                 if (gcDaemonProtection && !JreCompat.isJre9Available()) {

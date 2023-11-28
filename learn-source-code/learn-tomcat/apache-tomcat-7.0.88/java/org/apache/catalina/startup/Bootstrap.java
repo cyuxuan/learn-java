@@ -67,9 +67,19 @@ public final class Bootstrap {
      */
     private Object catalinaDaemon = null;
 
-
+    /**
+     * 加载Tomcat所需要的jar包和class文件，可以被Tomcat容器本身以及各个Webapp访问
+     */
     ClassLoader commonLoader = null;
+
+    /**
+     * Tomcat容器私有的类加载器，加载路径中的class对于Webapp不可见
+     */
     ClassLoader catalinaLoader = null;
+
+    /**
+     * 各个Webapp共享的类加载器，加载路径中的class对于所有Webapp可见，对于Tomcat不可见
+     */
     ClassLoader sharedLoader = null;
 
 
@@ -420,6 +430,7 @@ public final class Bootstrap {
 
         if (daemon == null) {
             // Don't set daemon until init() has completed（完成）
+            // 在init()完成之前不要设置守护进程
             Bootstrap bootstrap = new Bootstrap();
             try {
                 // 启动初始化
@@ -436,6 +447,7 @@ public final class Bootstrap {
             // When running as a service the call to stop will be on a new
             // thread so make sure the correct class loader is used to prevent
             // a range of class not found exceptions.
+            // 当作为服务运行时，停止调用将在新线程上，因此请确保使用正确的类加载器来防止类未发现异常范围。
             Thread.currentThread().setContextClassLoader(daemon.catalinaLoader);
         }
 

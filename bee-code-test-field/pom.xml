@@ -15,6 +15,7 @@
         <module>bee-algorithm</module>
         <module>redis-test-field</module>
         <module>project-demo</module>
+        <module>spring-test-field/springframework-test-field-v2</module>
     </modules>
 
     <properties>

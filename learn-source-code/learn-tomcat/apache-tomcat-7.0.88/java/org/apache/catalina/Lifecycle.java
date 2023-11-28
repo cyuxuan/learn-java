@@ -100,6 +100,7 @@ public interface Lifecycle {
 
     /**
      * The LifecycleEvent type for the "component start" event.
+     * 组件的启动事件标识
      */
     public static final String START_EVENT = "start";
 
@@ -118,6 +119,7 @@ public interface Lifecycle {
 
     /**
      * The LifecycleEvent type for the "component stop" event.
+     * 组件的停止事件标识
      */
     public static final String STOP_EVENT = "stop";
 
