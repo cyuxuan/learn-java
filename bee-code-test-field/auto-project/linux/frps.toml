@@ -1,0 +1,215 @@
+# This configuration file is for reference only. Please do not use this configuration directly to run the program as it may have various issues.
+# 此配置文件仅供参考。请不要直接使用此配置来运行程序，因为它可能有各种问题。
+
+# A literal address or host name for IPv6 must be enclosed
+# in square brackets, as in "[::1]:80", "[ipv6-host]:http" or "[ipv6-host%zone]:80"
+# IPv6 的文字地址或主机名必须括在方括号中，如 “[：：1]：80”、“[ipv6-host]：http” 或 “[ipv6-host%zone]：80”
+# For single "bindAddr" field, no need square brackets, like `bindAddr = "::"`.
+# 对于单个 “bindAddr” 字段，不需要方括号，例如 'bindAddr = “：：”'。
+bindAddr = "0.0.0.0"
+bindPort = 7000
+
+# udp port used for kcp protocol, it can be same with 'bindPort'.
+# UDP 端口用于 kcp 协议，它可以与 'bindPort' 相同。
+# if not set, kcp is disabled in frps.
+# 如果未设置，则在 FRPS 中禁用 KCP。kcp绑定端口 = 7000
+kcpBindPort = 7000
+
+# udp port used for quic protocol.
+# 用于 QUIC 协议的 UDP 端口。
+# if not set, quic is disabled in frps.
+# 如果未设置，则在 FRPS 中禁用 QUIC。
+# quicBindPort = 7002
+
+
+# Specify which address proxy will listen for, default value is same with bindAddr
+# 指定代理将侦听的地址，默认值与 bindAddr 相同
+# proxyBindAddr = "127.0.0.1"
+
+# quic protocol options
+# quic 协议选项
+# transport.quic.keepalivePeriod = 10
+# transport.quic.maxIdleTimeout = 30
+# transport.quic.maxIncomingStreams = 100000
+
+# Heartbeat configure, it's not recommended to modify the default value
+# 心跳配置，不建议修改默认值
+# The default value of heartbeatTimeout is 90. Set negative value to disable it.
+# 心跳超时的默认值为 90。设置负值以禁用它。
+# transport.heartbeatTimeout = 90
+
+# Pool count in each proxy will keep no more than maxPoolCount.
+# 每个代理中的池计数将保留不超过 maxPoolCount。
+transport.maxPoolCount = 5
+
+# If tcp stream multiplexing is used, default is true
+# 如果使用 tcp 流多路复用，则默认值为 true
+# transport.tcpMux = true
+
+# Specify keep alive interval for tcp mux.
+# 指定 tcp 复用的保活间隔。
+# only valid if tcpMux is true.
+# 仅在 tcpMux 为真时有效。
+# transport.tcpMuxKeepaliveInterval = 60
+
+# tcpKeepalive specifies the interval between keep-alive probes for an active network connection between frpc and frps.
+# tcpKeepalive 指定 frpc 和 frps 之间活动网络连接的保持活动探测器之间的间隔。
+# If negative, keep-alive probes are disabled.
+# 如果为负数，则禁用保活探测器。
+# transport.tcpKeepalive = 7200
+
+# transport.tls.force specifies whether to only accept TLS-encrypted connections. By default, the value is false.
+# transport.tls.force 指定是否只接受 TLS 加密的连接。默认情况下，该值为 false。tls.force = false
+tls.force = false
+
+# transport.tls.certFile = "server.crt"
+# transport.tls.keyFile = "server.key"
+# transport.tls.trustedCaFile = "ca.crt"
+
+# If you want to support virtual host, you must set the http port for listening (optional)
+# 如果要支持虚拟主机，必须设置 http 端口进行监听（可选）
+# Note: http port and https port can be same with bindPort vhostHTTPPort = 80 vhostHTTPSPort = 443
+# 注意：http 端口和 https 端口可以与 bindPort 相同
+vhostHTTPPort = 80
+vhostHTTPSPort = 443
+
+# Response header timeout(seconds) for vhost http server, default is 60s
+# vhost http 服务器的响应头超时（秒），默认为 60s
+# vhostHTTPTimeout = 60
+
+# tcpmuxHTTPConnectPort specifies the port that the server listens for TCP
+# tcpmuxHTTPConnectPort 指定服务器侦听 TCP
+# HTTP CONNECT requests. If the value is 0, the server will not multiplex TCP
+# HTTP CONNECT 请求的端口。如果值为 0，则服务器不会在一个端口上多路复用 TCP
+# requests on one single port. If it's not - it will listen on this value for
+# 请求。如果不是 - 它将侦听
+# HTTP CONNECT requests. By default, this value is 0.
+# HTTP CONNECT 请求的此值。默认情况下，此值为 0。
+# tcpmuxHTTPConnectPort = 1337
+
+# If tcpmuxPassthrough is true, frps won't do any update on traffic.
+# 如果 tcpmux直通 为真，frps 不会对流量进行任何更新。
+# tcpmuxPassthrough = false
+
+# Configure the web server to enable the dashboard for frps.
+# 配置 Web 服务器以启用 frps 的仪表板。
+# dashboard is available only if webServer.port is set.
+# 仪表板仅在设置 webServer.port 时才可用。
+webServer.addr = "120.25.245.214"
+webServer.port = 7500
+webServer.user = "beenest"
+webServer.password = "beenest@666???"
+# webServer.tls.certFile = "server.crt"
+# webServer.tls.keyFile = "server.key"
+# dashboard assets directory(only for debug mode)
+# dashboard assets directory（仅适用于调试模式）
+# webServer.assetsDir = "./static"
+
+# Enable golang pprof handlers in dashboard listener.
+# 在仪表板侦听器中启用 golang pprof 处理程序。
+# Dashboard port must be set first
+# 仪表板端口必须首先设置 webServer.pprofEnable = false
+webServer.pprofEnable = false
+
+# enablePrometheus will export prometheus metrics on webServer in /metrics api.
+# enablePrometheus 将在 /metrics API 中导出 webServer 上的 Prometheus 指标。启用普罗米修斯 = 真
+enablePrometheus = true
+
+# console or real logFile path like ./frps.log
+# 控制台或实际日志文件路径，如 ./frps.log log.to = “./frps.log”
+log.to = "./frps.log"
+# trace, debug, info, warn, error
+# 跟踪、调试、信息、警告、错误 log.level = “info” log.maxDays = 3
+log.level = "info"
+log.maxDays = 3
+# disable log colors when log.to is console, default is false
+# 当 log.to 是控制台时禁用日志颜色，默认值为 false log.disablePrintColor = false
+log.disablePrintColor = false
+
+# DetailedErrorsToClient defines whether to send the specific error (with debug info) to frpc. By default, this value is true.
+# DetailedErrorsToClient 定义是否将特定错误（带有调试信息）发送到 frpc。默认情况下，此值为 true。detailedErrorsToClient = true
+detailedErrorsToClient = true
+
+# auth.method specifies what authentication method to use authenticate frpc with frps.
+# auth.method 指定使用哪种身份验证方法对 FRPC 进行 FRP 身份验证。
+# If "token" is specified - token will be read into login message.
+# 如果指定了“token”，令牌将被读入登录消息。
+# If "oidc" is specified - OIDC (Open ID Connect) token will be issued using OIDC settings. By default, this value is "token".
+# 如果指定了“oidc”，将使用 OIDC 设置颁发 OIDC（开放 ID 连接）令牌。默认情况下，此值为“令牌”。auth.method = “token”
+auth.method = "token"
+
+# auth.additionalScopes specifies additional scopes to include authentication information.
+# auth.additionalScopes 指定其他范围以包含身份验证信息。
+# Optional values are HeartBeats, NewWorkConns.
+# 可选值为 HeartBeats、NewWorkConns。
+# auth.additionalScopes = ["HeartBeats", "NewWorkConns"]
+
+# auth token
+# 身份验证令牌 auth.token = “12345678”
+auth.token = "beenest@666???"
+
+# oidc issuer specifies the issuer to verify OIDC tokens with.
+# OIDC 颁发者指定用于验证 OIDC 令牌的颁发者。auth.oidc.issuer = “”
+auth.oidc.issuer = ""
+# oidc audience specifies the audience OIDC tokens should contain when validated.
+# OIDC 受众指定 OIDC 令牌在验证时应包含的受众。auth.oidc.audience = “”
+auth.oidc.audience = ""
+# oidc skipExpiryCheck specifies whether to skip checking if the OIDC token is expired.
+# oidc skipExpiryCheck 指定在 OIDC 令牌过期时是否跳过检查。auth.oidc.skipExpiryCheck = false
+auth.oidc.skipExpiryCheck = false
+# oidc skipIssuerCheck specifies whether to skip checking if the OIDC token's issuer claim matches the issuer specified in OidcIssuer.
+# oidc skipIssuerCheck 指定是否跳过检查 OIDC 令牌的颁发者声明是否与 OidcIssuer 中指定的颁发者匹配。auth.oidc.skipIssuerCheck = false
+auth.oidc.skipIssuerCheck = false
+
+# userConnTimeout specifies the maximum time to wait for a work connection.
+# userConnTimeout 指定等待工作连接的最长时间。
+# 用户连接超时 = 10
+# userConnTimeout = 10
+
+# Only allow frpc to bind ports you list. By default, there won't be any limit.
+# 只允许 frpc 绑定你列出的端口。默认情况下，不会有任何限制。allowPorts = [ { start = 2000， end = 3000 }， { single = 3001 }， { single = 3003 }， { start = 4000， end = 50000 } ]
+allowPorts = [
+    { start = 2000, end = 3000 },
+    { single = 3001 },
+    { single = 3003 },
+    { start = 4000, end = 50000 }
+]
+
+# 每个客户端可以使用的最大端口数，默认值为 0 表示无限制 maxPortsPerClient = 0
+# Max ports can be used for each client, default value is 0 means no limit
+maxPortsPerClient = 0
+
+# 如果子域主机不为空，则可以在 frpc 的配置文件中设置类型为 http 或 https 的子域
+# 当子域为 est 时，路由使用的主机为 test.frps.com 子域主机 = “frps.com”
+# If subDomainHost is not empty, you can set subdomain when type is http or https in frpc's configure file
+# When subdomain is est, the host used by routing is test.frps.com
+subDomainHost = "frps.com"
+
+# HTTP 请求的自定义 404 页面
+# custom 404 page for HTTP requests
+# 自定义 404Page = “/path/to/404.html”
+# custom404Page = "/path/to/404.html"
+
+# 指定 udp 数据包大小，单位为字节。如果未设置，则默认值为 1500。
+# 客户端和服务器之间的参数应该相同。
+# 它会影响 udp 和 sudp 代理。udp数据包大小 = 1500
+# specify udp packet size, unit is byte. If not set, the default value is 1500.
+# This parameter should be same between client and server.
+# It affects the udp and sudp proxy.
+udpPacketSize = 1500
+
+# NAT 打孔策略数据的保留时间。nathole分析数据储备小时数 = 168
+# Retention time for NAT hole punching strategy data.
+natholeAnalysisDataReserveHours = 168
+
+[[httpPlugins]]
+name = "user-manager"
+addr = "127.0.0.1:9000"
+path = "/handler"
+ops = ["Login"]
+
+[[httpPlugins]]
+name = "port-manager"
+addr = "127.0.0.1:9001"
+path = "/handler"
+ops = ["NewProxy"]

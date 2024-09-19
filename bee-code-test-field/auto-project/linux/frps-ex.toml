@@ -1,0 +1,14 @@
+bindPort = 7000
+auth.method = "token"
+auth.token = ""
+vhostHTTPPort = 80
+vhostHTTPSPort = 443
+transport.tls.force = false
+webServer.port = 7008
+webServer.user = "beenest"
+webServer.password = ""
+webServer.addr = "0.0.0.0"
+transport.maxPortsPerClient = 20
+allowPorts = [
+    { start = 1, end = 40000 }
+]

@@ -58,3 +58,6 @@ kubectl describe pod -n kubesphere-devops-system devops-apiserver-7576cfc79c-gxx
 ./kk delete node node07 -f config-sample.yaml
 
 
+./kk create config [--with-kubernetes version] [--with-kubesphere version] [(-f | --file) path]
+
+./kk create config --with-kubernetes v1.21.9

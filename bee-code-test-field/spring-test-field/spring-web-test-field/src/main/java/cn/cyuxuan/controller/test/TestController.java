@@ -14,14 +14,15 @@ public class TestController {
 
     @GetMapping("/teststr")
     public String testStr() {
-        try{
-            Thread.sleep(500);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        testService.testMore("123");
-        char[] chars = new char[104857600];
-        return testService.testService();
+//        try{
+//            Thread.sleep(500);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        testService.testMore("123");
+//        char[] chars = new char[104857600];
+//        return testService.testService();
+        return "";
     }
 
     @GetMapping("/teststr2")

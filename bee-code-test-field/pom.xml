@@ -16,6 +16,7 @@
         <module>redis-test-field</module>
         <module>project-demo</module>
         <module>spring-test-field/springframework-test-field-v2</module>
+        <module>spring-test-field/Spring-Reactive-test-field</module>
     </modules>
 
     <properties>

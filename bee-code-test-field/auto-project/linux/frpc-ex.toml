@@ -1,0 +1,19 @@
+transport.tls.enable = true
+serverAddr = "120.25.245.214"
+serverPort = 7000
+
+auth.token = ""
+
+[[proxies]]
+name = "test-http"
+type = "tcp"
+localIP = "127.0.0.1"
+localPort = 9000
+remotePort = 6060
+
+[[proxies]]
+name = "ssh"
+type = "tcp"
+localIP = "127.0.0.1"
+localPort = 22
+remotePort = 6000
